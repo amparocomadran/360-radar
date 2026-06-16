@@ -76,7 +76,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] text-[#1e293b] font-sans antialiased selection:bg-[#facc15] selection:text-[#0f172a]">
+    <div className="min-h-screen bg-[#070b13] text-[#f8fafc] font-sans antialiased selection:bg-[#facc15] selection:text-[#0f172a]">
       
       {/* TOP DECORATIVE GLOBAL FLOATING STATUS BAR */}
       <div className="bg-[#0f172a] text-[#facc15] text-center py-2 px-4 text-[11px] sm:text-xs font-black tracking-widest uppercase flex items-center justify-center gap-1.5 shadow-md">
@@ -85,14 +85,20 @@ export default function App() {
       </div>
 
       {/* FIXED FLOATING NAVBAR */}
-      <header className="sticky top-0 z-40 bg-[#0f172a]/95 backdrop-blur-md border-b border-slate-800/60 py-3.5 px-4 sm:px-6">
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 py-3.5 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="bg-[#facc15] text-[#0f172a] p-1.5 rounded-lg font-black text-xs sm:text-sm tracking-tighter flex items-center justify-center gap-1 shadow-lg shadow-yellow-500/10">
-              <span className="text-sm font-extrabold rotate-12">🧭</span>
+          <div className="flex items-center gap-3">
+            <img 
+              src="https://i.postimg.cc/43cbHpBH/logo-sin-fondo.png" 
+              alt="RADAR 360 Logo" 
+              className="h-10 sm:h-12 w-auto object-contain shrink-0 filter drop-shadow-sm" 
+              style={{ imageRendering: 'auto' }}
+              referrerPolicy="no-referrer"
+            />
+            <div className="bg-[#facc15] text-[#0f172a] p-1.5 rounded-lg font-black text-xs sm:text-sm tracking-tighter flex items-center justify-center gap-1 shadow-md shadow-yellow-500/10 hidden sm:flex">
               <span>RADAR 360</span>
             </div>
-            <span className="hidden sm:inline-block text-[10px] sm:text-xs font-semibold text-slate-300 bg-slate-800 border border-slate-700 px-2 py-0.5 rounded-md">
+            <span className="hidden md:inline-block text-[10px] sm:text-xs font-semibold text-slate-700 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-md">
               Edición Gastronómica
             </span>
           </div>
@@ -100,19 +106,19 @@ export default function App() {
           <div className="flex items-center gap-3 sm:gap-4">
             <a 
               href="#calculadora" 
-              className="hidden md:inline-block text-xs font-bold text-slate-300 hover:text-[#facc15] transition-colors"
+              className="hidden md:inline-block text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors"
             >
               Calcular Pérdidas
             </a>
             <a 
               href="#bonos" 
-              className="hidden lg:inline-block text-xs font-bold text-slate-300 hover:text-[#facc15] transition-colors"
+              className="hidden lg:inline-block text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors"
             >
               Bonos Incluidos
             </a>
             <a 
               href="#faq-section" 
-              className="text-xs font-normal text-slate-300 hover:text-[#facc15] transition-colors mr-1 sm:mr-2"
+              className="text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors mr-1 sm:mr-2"
             >
               Preguntas
             </a>
@@ -126,31 +132,42 @@ export default function App() {
         </div>
       </header>
 
-      {/* HERO SECTION - AMBIENT DARK BACKGROUND */}
-      <section className="relative overflow-hidden pt-16 pb-24 sm:pt-24 sm:pb-32 px-4 bg-[#0f172a]" id="hero">
-        {/* Neon Light Flares */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-yellow-500/5 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
+      {/* HERO SECTION - LIGHT PREMIUM BACKGROUND FOR HIGH VISIBILITY */}
+      <section className="relative overflow-hidden pt-16 pb-24 sm:pt-24 sm:pb-32 px-4 bg-gradient-to-b from-white via-slate-50 to-slate-100 border-b border-slate-200" id="hero">
+        {/* Soft elegant warm glow decorations */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-yellow-400/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-indigo-200/20 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-5xl mx-auto text-center space-y-6 sm:space-y-8 relative z-10">
           
+          {/* Main App Logo */}
+          <div className="flex justify-center -mb-2 sm:mb-2 motion-safe:animate-fade-in">
+            <img 
+              src="https://i.postimg.cc/43cbHpBH/logo-sin-fondo.png" 
+              alt="RADAR 360 Logo" 
+              className="h-28 sm:h-36 w-auto object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.08)] transform hover:scale-[1.03] transition-transform duration-300" 
+              style={{ imageRendering: 'auto' }}
+              referrerPolicy="no-referrer"
+            />
+          </div>
+          
           {/* Tagline */}
-          <div className="inline-flex items-center gap-1.5 bg-yellow-500/10 text-[#facc15] px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest border border-yellow-500/20">
-            <Sparkles className="w-3.5 h-3.5" /> RADAR 360 Negocios Gastronómicos
+          <div className="inline-flex items-center gap-1.5 bg-yellow-500/10 text-yellow-800 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest border border-yellow-500/20">
+            <Sparkles className="w-3.5 h-3.5 text-yellow-700" /> RADAR 360 Negocios Gastronómicos
           </div>
 
           {/* Core Title (Supplied Copy with theme styling) */}
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-[1.15] max-w-4xl mx-auto">
-            Convierte clientes felices en <span className="text-[#facc15]">reseñas de Google</span> y detecta quejas antes de que destruyan tu reputación en 7 días
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-slate-900 tracking-tight leading-[1.15] max-w-4xl mx-auto font-sans">
+            Convierte clientes felices en <span className="text-amber-600 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200/40">reseñas de Google</span> y detecta quejas antes de que destruyan tu reputación en 7 días
           </h1>
 
           {/* Subheading */}
-          <p className="text-sm sm:text-lg md:text-xl text-slate-350 font-medium max-w-3xl mx-auto leading-relaxed">
-            Sin perseguir clientes para que opinen, sin revisar plataformas una por una, sin descubrir problemas cuando ya es demasiado tarde. Solo un sistema inteligente que captura la experiencia real del cliente — <span className="font-extrabold text-[#facc15]">incluso si no estás en el restaurante.</span>
+          <p className="text-sm sm:text-lg md:text-xl text-slate-700 font-medium max-w-3xl mx-auto leading-relaxed">
+            Sin perseguir clientes para que opinen, sin revisar plataformas una por una, sin descubrir problemas cuando ya es demasiado tarde. Solo un sistema inteligente que captura la experiencia real del cliente — <span className="font-extrabold text-yellow-800">incluso si no estás en el restaurante.</span>
           </p>
 
           {/* Additional Positioning Statement */}
-          <p className="text-xs sm:text-sm text-slate-400 font-semibold italic border-y border-white/10 py-3.5 max-w-2xl mx-auto">
+          <p className="text-xs sm:text-sm text-slate-500 font-semibold italic border-y border-slate-200 py-3.5 max-w-2xl mx-auto">
             "El primer sistema que convierte la experiencia de cada mesa en datos, alertas y reseñas que aumentan tus ingresos."
           </p>
 
@@ -162,9 +179,9 @@ export default function App() {
               { text: 'Alertas por WhatsApp', icon: '📱' },
               { text: '100% Sin Hardware Extra', icon: '🔌' },
             ].map((badge, idx) => (
-              <div key={idx} className="bg-slate-900/80 border border-slate-800 p-3 rounded-2xl flex items-center justify-center gap-2 text-white">
+              <div key={idx} className="bg-white/80 backdrop-blur-sm border border-slate-200/80 p-3 rounded-2xl flex items-center justify-center gap-2 text-slate-800 shadow-sm hover:shadow transition-shadow">
                 <span className="text-sm">{badge.icon}</span>
-                <span className="text-[10px] sm:text-xs font-bold text-slate-200">{badge.text}</span>
+                <span className="text-[10px] sm:text-xs font-bold text-slate-700">{badge.text}</span>
               </div>
             ))}
           </div>
@@ -173,28 +190,28 @@ export default function App() {
           <div className="pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               onClick={() => openCheckout('yearly')}
-              className="w-full sm:w-auto bg-[#facc15] hover:bg-yellow-400 text-[#0f172a] font-extrabold px-8 py-4 rounded-full shadow-lg shadow-yellow-500/15 hover:shadow-yellow-500/20 hover:scale-[1.02] transition-all text-xs sm:text-sm tracking-widest cursor-pointer uppercase flex items-center justify-center gap-2 active:scale-98"
+              className="w-full sm:w-auto bg-[#facc15] hover:bg-yellow-400 text-[#0f172a] font-extrabold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all text-xs sm:text-sm tracking-widest cursor-pointer uppercase flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-98"
             >
               <span>QUIERO PROTEGER MI REPUTACIÓN AHORA</span>
               <ArrowRight className="w-4 h-4 shrink-0 font-bold" />
             </button>
             <a
               href="#calculadora"
-              className="w-full sm:w-auto bg-slate-900 hover:bg-slate-850 text-slate-200 hover:text-white border border-slate-800 font-bold px-8 py-4 rounded-full transition-all text-xs sm:text-sm cursor-pointer text-center block"
+              className="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold px-8 py-4 rounded-full transition-all text-xs sm:text-sm cursor-pointer text-center block shadow-sm hover:shadow"
             >
               Calcular Pérdida en Mi Restaurante
             </a>
           </div>
 
           {/* High Context Trust Ticker */}
-          <div className="pt-4 flex items-center justify-center gap-6 text-[10px] sm:text-xs text-slate-400 font-semibold uppercase tracking-wider">
-            <span className="flex items-center gap-1.5 text-slate-350">
-              <span className="flex h-2 w-2 rounded-full bg-green-400 animate-pulse"></span>
+          <div className="pt-4 flex items-center justify-center gap-6 text-[10px] sm:text-xs text-slate-500 font-semibold uppercase tracking-wider">
+            <span className="flex items-center gap-1.5 text-slate-600">
+              <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
               En 7 días o menos
             </span>
             <span>•</span>
-            <span className="flex items-center gap-1 text-slate-350">
-              <ShieldCheck className="w-4 h-4 text-[#facc15]" />
+            <span className="flex items-center gap-1 text-slate-600">
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
               Garantía total de satisfacción
             </span>
           </div>
@@ -202,22 +219,22 @@ export default function App() {
         </div>
       </section>
 
-      {/* SECTION 2: WHAT WILL YOU UNLOCK? (¿QUÉ DESBLOQUEARÁS?) - CONTRAST LIGHT BACKGROUND */}
-      <section className="py-20 sm:py-28 bg-slate-50 text-slate-900 border-y border-slate-200 relative overflow-hidden" id="beneficios">
+      {/* SECTION 2: WHAT WILL YOU UNLOCK? (¿QUÉ DESBLOQUEARÁS?) - PREMIUM DARK SLATE LAYOUT */}
+      <section className="py-20 sm:py-28 bg-[#0b0f19] text-white border-y border-slate-900 relative overflow-hidden" id="beneficios">
         
-        {/* Soft background pattern for light contrast focus */}
-        <div className="absolute inset-0 opacity-40 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
+        {/* Soft background pattern for dark contrast focus */}
+        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
 
         <div className="max-w-6xl mx-auto px-4 relative z-10">
           
           <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
-            <span className="bg-yellow-500/10 text-yellow-800 border border-yellow-500/20 text-xs px-3.5 py-1.5 rounded-full font-extrabold uppercase tracking-widest inline-block">
+            <span className="bg-yellow-500/10 text-[#facc15] border border-yellow-500/20 text-xs px-3.5 py-1.5 rounded-full font-extrabold uppercase tracking-widest inline-block">
               Funcionalidades Clave
             </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-950 tracking-tight mt-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight mt-4">
               ¿Qué desbloquearás con Radar 360?
             </h2>
-            <p className="text-sm sm:text-base text-slate-600 mt-3 font-normal">
+            <p className="text-sm sm:text-base text-slate-300 mt-3 font-normal">
               La artillería digital más completa del mercado gastronómico para blindar tu negocio las 24 horas.
             </p>
           </div>
@@ -226,95 +243,95 @@ export default function App() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             
             {/* Block 1 */}
-            <div className="bg-white border border-slate-200 hover:border-yellow-500/40 p-6 sm:p-8 rounded-3xl shadow-sm hover:shadow-lg transition-all duration-300 group flex flex-col justify-between">
+            <div className="bg-slate-900/60 border border-slate-800 hover:border-yellow-500/40 p-6 sm:p-8 rounded-3xl shadow-sm hover:shadow-lg transition-all duration-300 group flex flex-col justify-between">
               <div>
-                <div className="w-12 h-12 bg-yellow-100 text-yellow-800 rounded-2xl flex items-center justify-center text-xl font-bold mb-5 shadow-inner">
+                <div className="w-12 h-12 bg-yellow-500/10 text-[#facc15] rounded-2xl flex items-center justify-center text-xl font-bold mb-5 shadow-inner">
                   📱
                 </div>
-                <h3 className="text-lg sm:text-xl font-black text-slate-950 tracking-tight leading-snug">
+                <h3 className="text-lg sm:text-xl font-black text-white tracking-tight leading-snug">
                   Sistema QR Inteligente de Atención Instantánea
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-600 mt-3 font-normal leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-300 mt-3 font-normal leading-relaxed">
                   Tus clientes pueden llamar al mesero, pedir la cuenta, solicitar ayuda o reportar problemas en segundos desde su celular. Menos espera. Más satisfacción para la clientela.
                 </p>
               </div>
-              <div className="text-[11px] font-bold text-yellow-700 mt-4 flex items-center gap-1 uppercase tracking-wider group-hover:translate-x-1 transition-transform">
+              <div className="text-[11px] font-bold text-[#facc15] mt-4 flex items-center gap-1 uppercase tracking-wider group-hover:translate-x-1 transition-transform">
                 <span>Cero Esperas</span>
                 <ChevronRight className="w-3 h-3" />
               </div>
             </div>
 
             {/* Block 2 */}
-            <div className="bg-white border border-slate-200 hover:border-yellow-500/40 p-6 sm:p-8 rounded-3xl shadow-sm hover:shadow-lg transition-all duration-300 group flex flex-col justify-between">
+            <div className="bg-slate-900/60 border border-slate-800 hover:border-yellow-500/40 p-6 sm:p-8 rounded-3xl shadow-sm hover:shadow-lg transition-all duration-300 group flex flex-col justify-between">
               <div>
-                <div className="w-12 h-12 bg-blue-100 text-blue-700/90 rounded-2xl flex items-center justify-center text-xl font-bold mb-5 shadow-inner">
+                <div className="w-12 h-12 bg-blue-500/10 text-blue-400 rounded-2xl flex items-center justify-center text-xl font-bold mb-5 shadow-inner">
                   ⭐
                 </div>
-                <h3 className="text-lg sm:text-xl font-black text-slate-950 tracking-tight leading-snug">
+                <h3 className="text-lg sm:text-xl font-black text-white tracking-tight leading-snug">
                   Filtro de Reputación Automático
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-600 mt-3 font-normal leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-300 mt-3 font-normal leading-relaxed">
                   Los clientes felices son enviados a Google para dejar reseñas. Los clientes insatisfechos son dirigidos a un canal privado para resolver el problema antes de que se vuelva público en internet.
                 </p>
               </div>
-              <div className="text-[11px] font-bold text-blue-700 mt-4 flex items-center gap-1 uppercase tracking-wider group-hover:translate-x-1 transition-transform">
+              <div className="text-[11px] font-bold text-blue-400 mt-4 flex items-center gap-1 uppercase tracking-wider group-hover:translate-x-1 transition-transform">
                 <span>Tu Escudo My Business</span>
                 <ChevronRight className="w-3 h-3" />
               </div>
             </div>
 
             {/* Block 3 */}
-            <div className="bg-white border border-slate-200 hover:border-yellow-500/40 p-6 sm:p-8 rounded-3xl shadow-sm hover:shadow-lg transition-all duration-300 group flex flex-col justify-between">
+            <div className="bg-slate-900/60 border border-slate-800 hover:border-yellow-500/40 p-6 sm:p-8 rounded-3xl shadow-sm hover:shadow-lg transition-all duration-300 group flex flex-col justify-between">
               <div>
-                <div className="w-12 h-12 bg-indigo-100 text-indigo-700/90 rounded-2xl flex items-center justify-center text-xl font-bold mb-5 shadow-inner">
+                <div className="w-12 h-12 bg-indigo-500/10 text-indigo-400 rounded-2xl flex items-center justify-center text-xl font-bold mb-5 shadow-inner">
                   🖥️
                 </div>
-                <h3 className="text-lg sm:text-xl font-black text-slate-950 tracking-tight leading-snug">
+                <h3 className="text-lg sm:text-xl font-black text-white tracking-tight leading-snug">
                   Panel Unificado de Experiencia
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-600 mt-3 font-normal leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-300 mt-3 font-normal leading-relaxed">
                   Todas las solicitudes, comentarios privados y calificaciones de mesas organizadas por fecha en un solo lugar. Sin caos de libretas ni pérdida de información crucial para el negocio.
                 </p>
               </div>
-              <div className="text-[11px] font-bold text-indigo-700 mt-4 flex items-center gap-1 uppercase tracking-wider group-hover:translate-x-1 transition-transform">
+              <div className="text-[11px] font-bold text-indigo-400 mt-4 flex items-center gap-1 uppercase tracking-wider group-hover:translate-x-1 transition-transform">
                 <span>Centralización Total</span>
                 <ChevronRight className="w-3 h-3" />
               </div>
             </div>
 
             {/* Block 4 */}
-            <div className="bg-white border border-slate-200 hover:border-yellow-500/40 p-6 sm:p-8 rounded-3xl shadow-sm hover:shadow-lg transition-all duration-300 group flex flex-col justify-between md:col-span-1 lg:col-span-1">
+            <div className="bg-slate-900/60 border border-slate-800 hover:border-yellow-500/40 p-6 sm:p-8 rounded-3xl shadow-sm hover:shadow-lg transition-all duration-300 group flex flex-col justify-between md:col-span-1 lg:col-span-1">
               <div>
-                <div className="w-12 h-12 bg-rose-100 text-rose-700/90 rounded-2xl flex items-center justify-center text-xl font-bold mb-5 shadow-inner">
+                <div className="w-12 h-12 bg-rose-500/10 text-rose-400 rounded-2xl flex items-center justify-center text-xl font-bold mb-5 shadow-inner">
                   🚨
                 </div>
-                <h3 className="text-lg sm:text-xl font-black text-slate-950 tracking-tight leading-snug">
+                <h3 className="text-lg sm:text-xl font-black text-white tracking-tight leading-snug">
                   Monitor de Quejas en Tiempo Real
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-600 mt-3 font-normal leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-300 mt-3 font-normal leading-relaxed">
                   Detecta disgustos de tus comensales en el instante en que ocurren. Actúa de forma física antes de perder comensales y que paguen molestos.
                 </p>
               </div>
-              <div className="text-[11px] font-bold text-rose-700 mt-4 flex items-center gap-1 uppercase tracking-wider group-hover:translate-x-1 transition-transform">
+              <div className="text-[11px] font-bold text-rose-400 mt-4 flex items-center gap-1 uppercase tracking-wider group-hover:translate-x-1 transition-transform">
                 <span>Prevención de deserciones</span>
                 <ChevronRight className="w-3 h-3" />
               </div>
             </div>
 
             {/* Block 5 */}
-            <div className="bg-white border border-slate-200 hover:border-yellow-500/40 p-6 sm:p-8 rounded-3xl shadow-sm hover:shadow-lg transition-all duration-300 group flex flex-col justify-between md:col-span-2 lg:col-span-2">
+            <div className="bg-slate-900/60 border border-slate-800 hover:border-yellow-500/40 p-6 sm:p-8 rounded-3xl shadow-sm hover:shadow-lg transition-all duration-300 group flex flex-col justify-between md:col-span-2 lg:col-span-2">
               <div>
-                <div className="w-12 h-12 bg-amber-100 text-amber-700/90 rounded-2xl flex items-center justify-center text-xl font-bold mb-5 shadow-inner">
+                <div className="w-12 h-12 bg-amber-500/10 text-amber-400 rounded-2xl flex items-center justify-center text-xl font-bold mb-5 shadow-inner">
                   📊
                 </div>
-                <h3 className="text-lg sm:text-xl font-black text-slate-950 tracking-tight leading-snug">
+                <h3 className="text-lg sm:text-xl font-black text-white tracking-tight leading-snug">
                   Análisis Inteligente de Tendencias Gastronómicas
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-600 mt-3 font-normal leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-300 mt-3 font-normal leading-relaxed">
                   Descubre exactamente qué platillo o bebida está generando malas experiencias, qué números de mesas tienen más problemas y qué horarios están afectando el servicio mensual de tus ventas de manera invisible.
                 </p>
               </div>
-              <div className="text-[11px] font-bold text-amber-800 mt-4 flex items-center gap-1 uppercase tracking-wider group-hover:translate-x-1 transition-transform">
+              <div className="text-[11px] font-bold text-amber-400 mt-4 flex items-center gap-1 uppercase tracking-wider group-hover:translate-x-1 transition-transform">
                 <span>Optimización de Operaciones</span>
                 <ChevronRight className="w-3 h-3" />
               </div>
@@ -326,41 +343,41 @@ export default function App() {
           <div className="mt-12 text-center">
             <button 
               onClick={() => openCheckout('yearly')}
-              className="bg-slate-950 hover:bg-slate-850 text-white font-extrabold text-xs sm:text-sm px-8 py-4 rounded-full shadow-md transition-all cursor-pointer inline-flex items-center gap-2"
+              className="bg-[#facc15] hover:bg-yellow-400 text-slate-950 font-extrabold text-xs sm:text-sm px-8 py-4 rounded-full shadow-md transition-all cursor-pointer inline-flex items-center gap-2"
             >
               <span>ADQUIRIR MI ACCESO SEGURO</span>
-              <ArrowRight className="w-4 h-4 text-[#facc15]" />
+              <ArrowRight className="w-4 h-4 text-slate-950" />
             </button>
           </div>
 
         </div>
       </section>
 
-      {/* INTERACTIVE DEMO SANDBOX AREA (Diferente background: slate-900) */}
-      <section className="py-20 sm:py-28 bg-slate-900 px-4" id="simulador-en-vivo">
+      {/* INTERACTIVE DEMO SANDBOX AREA (Alternating Light background) */}
+      <section className="py-20 sm:py-28 bg-slate-50 border-y border-slate-200 px-4" id="simulador-en-vivo">
         <div className="max-w-7xl mx-auto">
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-10">
             <div className="lg:col-span-5 text-left space-y-4">
-              <span className="bg-yellow-500/10 text-[#facc15] border border-yellow-500/20 text-xs px-3.5 py-1.5 rounded-full font-bold uppercase tracking-wider inline-block">
+              <span className="bg-yellow-500/10 text-yellow-800 border border-yellow-500/20 text-xs px-3.5 py-1.5 rounded-full font-bold uppercase tracking-wider inline-block">
                 Prueba Interactiva
               </span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
                 Filtra las quejas en privado y eleva tus estrellas en Google automáticamente o en un clic
               </h2>
-              <p className="text-sm text-slate-350 leading-relaxed font-light">
+              <p className="text-sm text-slate-650 leading-relaxed font-normal">
                 No tienes que adivinar qué es lo que tus comensales opinan. Haz la simulación a la derecha: califica alto o reporta un problema común y observa la rapidez técnica con la que Radar 360 se acciona para blindarte.
               </p>
               
-              <ul className="space-y-2.5 pt-2 text-xs sm:text-sm text-slate-300">
+              <ul className="space-y-2.5 pt-2 text-xs sm:text-sm text-slate-700">
                 <li className="flex items-center gap-2">
-                  <span className="text-[#facc15] font-black">✓</span> Los clientes contentos van directos a tu enlace Maps
+                  <span className="text-amber-650 font-black">✓</span> Los clientes contentos van directos a tu enlace Maps
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="text-[#facc15] font-black">✓</span> Alertas instantáneas en mesa protegen el servicio
+                  <span className="text-amber-655 font-black">✓</span> Alertas instantáneas en mesa protegen el servicio
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="text-[#facc15] font-black">✓</span> Evita que comensales molestos escriban en TripAdvisor o Google
+                  <span className="text-amber-650 font-black">✓</span> Evita que comensales molestos escriban en TripAdvisor o Google
                 </li>
               </ul>
             </div>
@@ -453,15 +470,15 @@ export default function App() {
         </div>
       </section>
 
-      {/* SECTION 5: TARGET AUDIENCE (¿PARA QUIÉN ES ESTO?) - CONTRAST LIGHT BG */}
-      <section className="py-20 sm:py-28 bg-slate-100 text-slate-900 px-4" id="audiencia">
+      {/* SECTION 5: TARGET AUDIENCE (¿PARA QUIÉN ES ESTO?) - LIGHT COHESIVE THEME */}
+      <section className="py-20 sm:py-28 bg-slate-50 text-slate-900 px-4 border-t border-slate-200/80" id="audiencia">
         <div className="max-w-4xl mx-auto text-center space-y-12">
           
           <div className="space-y-3">
             <span className="bg-yellow-500/10 text-yellow-800 border border-yellow-500/20 text-xs px-3.5 py-1.5 rounded-full font-bold uppercase tracking-widest inline-block">
               Público Objetivo
             </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-950 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
               ¿Para quién es esto exactamente?
             </h2>
           </div>
@@ -469,39 +486,39 @@ export default function App() {
           {/* Persona Targets provided in copy */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
             
-            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
+            <div className="bg-white border border-slate-200 p-6 sm:p-8 rounded-3xl shadow-sm space-y-4">
               <div className="text-2xl">🏨</div>
-              <h3 className="font-extrabold text-slate-950 text-base">Negocios Gastronómicos</h3>
+              <h3 className="font-extrabold text-slate-900 text-base">Negocios Gastronómicos</h3>
               <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
                 Restaurantes, cafeterías, bistrós, bares, comedores y hoteles que dependen enteramente de su calificación en estrellas digitales para atraer turismo y nuevos comensales diariamente.
               </p>
             </div>
 
-            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
+            <div className="bg-white border border-slate-200 p-6 sm:p-8 rounded-3xl shadow-sm space-y-4">
               <div className="text-2xl">🧑‍💼</div>
-              <h3 className="font-extrabold text-slate-950 text-base">Dueños de Negocios</h3>
+              <h3 className="font-extrabold text-slate-900 text-base">Dueños de Negocios</h3>
               <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
                 Empresarios enfocados que están cansándose de enterarse de los problemas de cocina o servicio cuando ya es demasiado tarde para disculparse con el cliente.
               </p>
             </div>
 
-            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
+            <div className="bg-white border border-slate-200 p-6 sm:p-8 rounded-3xl shadow-sm space-y-4">
               <div className="text-2xl">👔</div>
-              <h3 className="font-extrabold text-slate-950 text-base">Gerentes y Administradores</h3>
+              <h3 className="font-extrabold text-slate-900 text-base">Gerentes y Administradores</h3>
               <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
-                Gerentes proactivos que quieren controlar de veras la experiencia de cada mesa sin andar persiguiendo clientes ni depender de reportes orales incompletos de los meseros.
+                Gerentes proactivos que quieren controlar de veras la experiencia de cada mesa sin andar persiguendo clientes ni depender de reportes orales incompletos de los meseros.
               </p>
             </div>
 
           </div>
 
           {/* Section Refuerzo Copy provided */}
-          <div className="bg-[#0f172a] text-white p-6 sm:p-8 lg:p-10 rounded-3xl border border-slate-800 text-left relative overflow-hidden shadow-xl mt-8">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-500/10 rounded-full blur-2xl pointer-events-none" />
-            <span className="text-[10px] bg-yellow-500/10 text-[#facc15] border border-yellow-500/20 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider block w-max">
+          <div className="bg-white text-slate-900 p-6 sm:p-8 lg:p-10 rounded-3xl border border-slate-200 text-left relative overflow-hidden shadow-md mt-8">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-400/5 rounded-full blur-2xl pointer-events-none" />
+            <span className="text-[10px] bg-yellow-500/10 text-yellow-850 border border-yellow-500/20 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider block w-max">
               REFUERZO ESTRATÉGICO
             </span>
-            <blockquote className="mt-4 text-[#facc15] font-black text-base sm:text-lg leading-relaxed">
+            <blockquote className="mt-4 text-amber-900 font-black text-base sm:text-lg leading-relaxed">
               "Lo que realmente estás comprando no es un simple sistema QR. Estás comprando visibilidad total sobre lo que ocurre en tu negocio antes de que afecte tus ingresos."
             </blockquote>
           </div>
@@ -514,18 +531,18 @@ export default function App() {
         <RoiCalculator />
       </section>
 
-      {/* SECTION 6: WHAT TO EXPECT (¿QUÉ PUEDES ESPERAR?) - CONTRAST LIGHT BG */}
-      <section className="py-20 sm:py-28 bg-white text-slate-900 px-4" id="expectativa">
+      {/* SECTION 6: WHAT TO EXPECT (¿QUÉ PUEDES ESPERAR?) - LIGHT THEMATIC */}
+      <section className="py-20 sm:py-28 bg-slate-50 text-slate-900 px-4 border-t border-slate-200/80" id="expectativa">
         <div className="max-w-5xl mx-auto text-center space-y-12">
           
           <div className="space-y-3">
-            <span className="bg-yellow-500/10 text-yellow-850 border border-yellow-500/20 text-xs px-3.5 py-1.5 rounded-full font-extrabold uppercase tracking-widest inline-block">
+            <span className="bg-yellow-500/10 text-yellow-800 border border-yellow-500/20 text-xs px-3.5 py-1.5 rounded-full font-extrabold uppercase tracking-widest inline-block">
               Garantía y Resultados
             </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-950 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
               ¿Qué puedes esperar desde los primeros días?
             </h2>
-            <p className="text-sm text-slate-500 max-w-lg mx-auto">
+            <p className="text-sm text-slate-600 max-w-lg mx-auto">
               Retornos reales medidos de manera directa sobre la reputación online de tu sucursal gastronómica.
             </p>
           </div>
@@ -533,11 +550,11 @@ export default function App() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             
             {/* Expectation 1 */}
-            <div className="text-left space-y-3 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+            <div className="text-left space-y-3 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
               <div className="text-lg bg-[#facc15] text-[#0f172a] w-8 h-8 rounded-full flex items-center justify-center font-bold font-mono">
                 1
               </div>
-              <h3 className="font-extrabold text-slate-950 text-[15px] sm:text-base leading-snug">
+              <h3 className="font-extrabold text-slate-1000 text-[15px] sm:text-base leading-snug">
                 Más reseñas positivas en Google
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 leading-normal">
@@ -546,11 +563,11 @@ export default function App() {
             </div>
 
             {/* Expectation 2 */}
-            <div className="text-left space-y-3 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+            <div className="text-left space-y-3 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
               <div className="text-lg bg-[#facc15] text-[#0f172a] w-8 h-8 rounded-full flex items-center justify-center font-bold font-mono">
                 2
               </div>
-              <h3 className="font-extrabold text-slate-950 text-[15px] sm:text-base leading-snug">
+              <h3 className="font-extrabold text-slate-1000 text-[15px] sm:text-base leading-snug">
                 Menos reseñas negativas
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 leading-normal">
@@ -559,11 +576,11 @@ export default function App() {
             </div>
 
             {/* Expectation 3 */}
-            <div className="text-left space-y-3 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+            <div className="text-left space-y-3 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
               <div className="text-lg bg-[#facc15] text-[#0f172a] w-8 h-8 rounded-full flex items-center justify-center font-bold font-mono">
                 3
               </div>
-              <h3 className="font-extrabold text-slate-950 text-[15px] sm:text-base leading-snug">
+              <h3 className="font-extrabold text-slate-1000 text-[15px] sm:text-base leading-snug">
                 Control total de tu negocio
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 leading-normal">
@@ -669,19 +686,19 @@ export default function App() {
         </div>
       </section>
 
-      {/* SECTION 8: PRICING COMPARISON & GRAND SUMMARY TABLE (White contrast background) */}
-      <section className="py-20 sm:py-32 bg-white text-slate-900 px-4" id="precios">
+      {/* SECTION 8: PRICING COMPARISON & GRAND SUMMARY TABLE (Alternating Light background) */}
+      <section className="py-20 sm:py-32 bg-slate-50 text-slate-900 px-4 border-t border-slate-200/80" id="precios">
         <div className="max-w-5xl mx-auto space-y-16">
           
           {/* Headline "HAZ CUENTAS..." as provided */}
           <div className="text-center space-y-4 max-w-3xl mx-auto">
-            <span className="bg-yellow-500/10 text-yellow-880 border border-yellow-500/20 text-xs px-3.5 py-1.5 rounded-full font-bold uppercase tracking-widest inline-block">
+            <span className="bg-yellow-500/10 text-yellow-800 border border-yellow-500/20 text-xs px-3.5 py-1.5 rounded-full font-bold uppercase tracking-widest inline-block">
               Análisis de Tarifas Comparativo
             </span>
-            <h2 className="text-3xl sm:text-5xl font-black text-slate-950 tracking-tight">
+            <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
               Haz cuentas... ¿Cuánto puedes ahorrar hoy?
             </h2>
-            <p className="text-sm sm:text-base text-slate-500 font-normal">
+            <p className="text-sm sm:text-base text-slate-650 font-normal">
               Contratar personal de Mystery Shopper o software de reputación inestable te cuesta miles al año. Mira y compara la diferencia:
             </p>
           </div>
@@ -690,16 +707,16 @@ export default function App() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
             
             {/* Alt 1: Consultoria */}
-            <div className="border border-slate-200 bg-slate-50 rounded-2xl p-6 sm:p-8 flex flex-col justify-between text-left">
+            <div className="border border-slate-200 bg-white rounded-2xl p-6 sm:p-8 flex flex-col justify-between text-left shadow-sm">
               <div>
-                <dt className="text-xs font-black uppercase tracking-wider text-slate-550">ALTERNATIVA TRADICIONAL</dt>
-                <dd className="font-extrabold text-slate-950 text-xl mt-2">Consultoría de Experiencia</dd>
+                <dt className="text-xs font-black uppercase tracking-wider text-amber-700">ALTERNATIVA TRADICIONAL</dt>
+                <dd className="font-extrabold text-slate-900 text-xl mt-2">Consultorías Físicas</dd>
                 <p className="text-xs text-slate-500 mt-1 font-mono">Costo estimado de mercado</p>
                 
-                <div className="py-4 my-4 border-y border-slate-200 flex items-baseline gap-1">
-                  <span className="text-2xl font-black text-slate-800">$500</span>
-                  <span className="text-base text-slate-500">a</span>
-                  <span className="text-2xl font-black text-slate-800">$3,000</span>
+                <div className="py-4 my-4 border-y border-slate-100 flex items-baseline gap-1">
+                  <span className="text-2xl font-black text-slate-900">$500</span>
+                  <span className="text-base text-slate-400">a</span>
+                  <span className="text-2xl font-black text-slate-900">$3,000</span>
                   <span className="text-xs text-slate-500 font-medium">/ mes</span>
                 </div>
 
@@ -709,22 +726,22 @@ export default function App() {
                   <li>• No evitan la queja en Google</li>
                 </ul>
               </div>
-              <p className="text-[10px] text-slate-400 font-medium pt-4 mt-6 border-t border-slate-200">
+              <p className="text-[10px] text-slate-500 font-medium pt-4 mt-6 border-t border-slate-100">
                 Poco práctico para la operación diaria.
               </p>
             </div>
 
             {/* Alt 2: Software convencional */}
-            <div className="border border-slate-200 bg-slate-50 rounded-2xl p-6 sm:p-8 flex flex-col justify-between text-left">
+            <div className="border border-slate-200 bg-white rounded-2xl p-6 sm:p-8 flex flex-col justify-between text-left shadow-sm">
               <div>
-                <dt className="text-xs font-black uppercase tracking-wider text-slate-550">SOFTWARE TRADICIONAL</dt>
-                <dd className="font-extrabold text-slate-950 text-xl mt-2">Software de Reputación</dd>
+                <dt className="text-xs font-black uppercase tracking-wider text-amber-700">SOFTWARE TRADICIONAL</dt>
+                <dd className="font-extrabold text-slate-900 text-xl mt-2">Software de Reputación</dd>
                 <p className="text-xs text-slate-500 mt-1 font-mono">Plataformas generales</p>
                 
-                <div className="py-4 my-4 border-y border-slate-200 flex items-baseline gap-1">
-                  <span className="text-2xl font-black text-slate-800">$100</span>
-                  <span className="text-base text-slate-500">a</span>
-                  <span className="text-2xl font-black text-slate-800">$500</span>
+                <div className="py-4 my-4 border-y border-slate-100 flex items-baseline gap-1">
+                  <span className="text-2xl font-black text-slate-900">$100</span>
+                  <span className="text-base text-slate-400">a</span>
+                  <span className="text-2xl font-black text-slate-900">$500</span>
                   <span className="text-xs text-slate-500 font-medium">/ mes</span>
                 </div>
 
@@ -734,12 +751,12 @@ export default function App() {
                   <li>• Complicada configuración inicial</li>
                 </ul>
               </div>
-              <p className="text-[10px] text-slate-400 font-medium pt-4 mt-6 border-t border-slate-200">
+              <p className="text-[10px] text-slate-500 font-medium pt-4 mt-6 border-t border-slate-100">
                 Requiere que el dueño extraiga reportes a mano.
               </p>
             </div>
 
-            {/* Alt 3: Our offer (GRAND HIGHLIGHT CARD) */}
+            {/* Alt 3: Our offer (GRAND HIGHLIGHT CARD) -> Pops in dark/gold for high conversion! */}
             <div className="border-4 border-[#facc15] bg-slate-950 text-white rounded-3xl p-6 sm:p-8 flex flex-col justify-between text-left shadow-2xl relative -translate-y-2">
               <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#facc15] text-[#0f172a] text-[10px] sm:text-xs font-black tracking-widest px-4 py-1 rounded-full uppercase">
                 OFERTA IRREPETIBLE ACTIVADA
@@ -780,64 +797,64 @@ export default function App() {
 
           </div>
 
-          {/* GRAND SUMMARY OF WHAT THEY TAKE (RESUMEN DE LO QUE TE LLEVAS) as requested */}
-          <div className="bg-slate-950 text-white rounded-3xl p-6 sm:p-8 lg:p-12 border border-slate-850/80 shadow-2xl mt-12 text-left relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-500/5 rounded-full blur-3xl pointer-events-none" />
+          {/* GRAND SUMMARY OF WHAT THEY TAKE (RESUMEN DE LO QUE TE LLEVAS) as requested - light themed */}
+          <div className="bg-white text-slate-900 rounded-3xl p-6 sm:p-8 lg:p-12 border border-slate-200 shadow-xl mt-12 text-left relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-400/5 rounded-full blur-3xl pointer-events-none" />
             
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               <div className="lg:col-span-7 space-y-6">
-                <h3 className="text-xl sm:text-2xl font-black text-[#facc15] uppercase tracking-tight">
+                <h3 className="text-xl sm:text-2xl font-black text-amber-800 uppercase tracking-tight">
                   Resumen de lo que te llevas hoy
                 </h3>
                 
-                <div className="space-y-3.5 text-xs sm:text-sm text-slate-300">
+                <div className="space-y-3.5 text-xs sm:text-sm text-slate-700">
                   <div className="flex items-start gap-2.5">
-                    <span className="text-[#facc15] font-extrabold shrink-0 mt-0.5">✔</span>
+                    <span className="text-amber-600 font-extrabold shrink-0 mt-0.5">✔</span>
                     <div>
-                      <p className="font-extrabold text-white">Radar 360 Restaurante (Membresía Completa)</p>
-                      <p className="text-slate-400 text-xs">Atención instantánea mediante código QR de vanguardia en mesa.</p>
+                      <p className="font-extrabold text-slate-900">Radar 360 Restaurante (Membresía Completa)</p>
+                      <p className="text-slate-500 text-xs">Atención instantánea mediante código QR de vanguardia en mesa.</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-2.5">
-                    <span className="text-[#facc15] font-extrabold shrink-0 mt-0.5">✔</span>
+                    <span className="text-amber-600 font-extrabold shrink-0 mt-0.5">✔</span>
                     <div>
-                      <p className="font-extrabold text-white">Llamador de Mesero, Cuenta y Asistencia Física</p>
-                      <p className="text-slate-400 text-xs">Tus clientes piden auxilio o ticket sin andarse levantando.</p>
+                      <p className="font-extrabold text-slate-900">Llamador de Mesero, Cuenta y Asistencia Física</p>
+                      <p className="text-slate-500 text-xs">Tus clientes piden auxilio o ticket sin andarse levantando.</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-2.5">
-                    <span className="text-[#facc15] font-extrabold shrink-0 mt-0.5">✔</span>
+                    <span className="text-amber-600 font-extrabold shrink-0 mt-0.5">✔</span>
                     <div>
-                      <p className="font-extrabold text-white">Captura y Filtro de Satisfacción en Tiempo Real</p>
-                      <p className="text-slate-400 text-xs">Conversión automática instantánea de clientes felices directamente en reseñas de Google.</p>
+                      <p className="font-extrabold text-slate-900">Captura y Filtro de Satisfacción en Tiempo Real</p>
+                      <p className="text-slate-500 text-xs">Conversión automática instantánea de clientes felices directamente en reseñas de Google.</p>
                     </div>
                   </div>
 
                   {/* Included Bonuses list */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-slate-900 text-xs text-slate-400">
-                    <span className="flex items-center gap-2">🎁 <span className="text-white font-bold">Bono #1:</span> Centro de Reputación Google</span>
-                    <span className="flex items-center gap-2">🎁 <span className="text-white font-bold">Bono #2:</span> Alertas Inteligentes de Riesgo</span>
-                    <span className="flex items-center gap-2 sm:col-span-2">🎁 <span className="text-white font-bold">Bono #3:</span> Informe Mensual AI de Desempeño</span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-slate-200 text-xs text-slate-500">
+                    <span className="flex items-center gap-2">🎁 <span className="text-slate-900 font-bold">Bono #1:</span> Centro de Reputación Google</span>
+                    <span className="flex items-center gap-2">🎁 <span className="text-slate-900 font-bold">Bono #2:</span> Alertas Inteligentes de Riesgo</span>
+                    <span className="flex items-center gap-2 sm:col-span-2">🎁 <span className="text-slate-900 font-bold">Bono #3:</span> Informe Mensual AI de Desempeño</span>
                   </div>
                 </div>
               </div>
 
-              {/* Conversion Box with direct button */}
-              <div className="lg:col-span-5 bg-slate-900 border border-slate-850 p-6 rounded-2xl text-center space-y-4">
-                <p className="text-xs sm:text-sm text-slate-350">
+              {/* Conversion Box with direct button (Keep Dark/Sleek for high emphasis) */}
+              <div className="lg:col-span-5 bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center space-y-4">
+                <p className="text-xs sm:text-sm text-slate-300">
                   Garantiza este precio de lanzamiento de por vida y blinda la recomendación de tu sucursal.
                 </p>
                 <div className="space-y-1">
-                  <p className="text-[11px] text-slate-450 uppercase tracking-widest block font-bold">Todo Incluido hoy por solo</p>
+                  <p className="text-[11px] text-slate-400 uppercase tracking-widest block font-bold">Todo Incluido hoy por solo</p>
                   <p className="text-2xl sm:text-4xl font-black text-[#facc15] font-mono tracking-tight">$29 USD / mes</p>
-                  <p className="text-[10px] text-yellow-450 font-medium">O elige plan anual para ahorrar más de $100 adicionales</p>
+                  <p className="text-[10px] text-yellow-405 font-medium">O elige plan anual para ahorrar más de $100 adicionales</p>
                 </div>
 
                 <button
                   onClick={() => openCheckout('yearly')}
-                  className="w-full bg-[#facc15] hover:bg-yellow-450 text-[#0f172a] font-extrabold py-4 rounded-full text-xs sm:text-sm shadow-xl transition-all uppercase tracking-tight cursor-pointer active:scale-95 flex items-center justify-center gap-1.5"
+                  className="w-full bg-[#facc15] hover:bg-yellow-455 text-[#0f172a] font-extrabold py-4 rounded-full text-xs sm:text-sm shadow-xl transition-all uppercase tracking-tight cursor-pointer active:scale-95 flex items-center justify-center gap-1.5"
                 >
                   <span>QUIERO PROTEGER MI REPUTACIÓN AHORA</span>
                   <ArrowRight className="w-4 h-4 shrink-0 font-extrabold text-slate-900" />
@@ -857,36 +874,36 @@ export default function App() {
       {/* SECTION 9: QUESTIONS & ANSWERS (Deep dark background: FAQ) */}
       <FaqSection />
 
-      {/* SECTION 10: CLOSING ARGUMENT & AHORA O NUNCA (Contrast layout block) */}
-      <section className="py-20 sm:py-32 bg-slate-900 border-t border-slate-850 text-white text-center px-4 relative overflow-hidden" id="cierre">
+      {/* SECTION 10: CLOSING ARGUMENT & AHORA O NUNCA (Alternating Light background) */}
+      <section className="py-20 sm:py-32 bg-slate-50 border-t border-slate-200 text-slate-900 text-center px-4 relative overflow-hidden" id="cierre">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-yellow-500/5 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-3xl mx-auto space-y-8 relative z-10">
           
-          <span className="bg-yellow-500/10 text-[#facc15] border border-yellow-500/20 text-xs px-3.5 py-1.5 rounded-full font-bold uppercase tracking-widest inline-block">
+          <span className="bg-yellow-500/10 text-yellow-850 border border-yellow-500/20 text-xs px-3.5 py-1.5 rounded-full font-bold uppercase tracking-widest inline-block">
             ÚLTIMA OPORTUNIDAD
           </span>
 
           {/* Closing statements as supplied in copy */}
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
             No se trata de comprar otro software para tu negocio gastronomico... Se trata de decidir si vas a seguir descubriendo los problemas cuando ya están publicados de forma pública en Google.
           </h2>
 
-          <p className="text-base sm:text-xl text-slate-350 font-light max-w-2xl mx-auto">
-            O si vas a detectarlos <span className="font-bold text-[#facc15] underline decoration-yellow-500/30">antes</span>.
+          <p className="text-base sm:text-xl text-slate-650 font-normal max-w-2xl mx-auto">
+            O si vas a detectarlos <span className="font-bold text-amber-700 underline decoration-amber-500/30">antes</span>.
           </p>
 
-          <div className="max-w-xl mx-auto rounded-2xl bg-slate-950 border border-slate-850 p-5 space-y-3.5 text-xs sm:text-sm text-slate-300 leading-relaxed text-left">
+          <div className="max-w-xl mx-auto rounded-2xl bg-white border border-slate-200 p-5 space-y-3.5 text-xs sm:text-sm text-slate-700 leading-relaxed text-left shadow-sm">
             <p>
-              Cada cliente insatisfecho que no logras identificar en mesa es una <span className="font-semibold text-rose-400 underline">reseña negativa</span> esperando suceder frente a tus ingresos del mes que viene.
+              Cada cliente insatisfecho que no logras identificar en mesa es una <span className="font-semibold text-rose-600 underline">reseña negativa</span> esperando suceder frente a tus ingresos del mes que viene.
             </p>
             <p>
-              Y cada cliente feliz que no aprovechas es una valiosa <span className="font-semibold text-[#facc15] underline">recomendación perdida</span> que pudo haber traído a diez nuevos grupos. Es hora de blindar tu labor en cocina.
+              Y cada cliente feliz que no aprovechas es una valiosa <span className="font-semibold text-amber-700 underline">recomendación perdida</span> que pudo haber traído a diez nuevos grupos. Es hora de blindar tu labor en cocina.
             </p>
           </div>
 
           <div className="pt-4 space-y-4">
-            <span className="block text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#facc15] to-amber-500 tracking-widest uppercase">
+            <span className="block text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-700 to-amber-900 tracking-widest uppercase">
               AHORA O NUNCA
             </span>
 
