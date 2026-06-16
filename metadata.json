@@ -1,0 +1,6 @@
+{
+  "name": "Radar 360 Negocios Gastronómicos",
+  "description": "Sistema inteligente de experiencia y reputación para restaurantes y negocios gastronómicos que aumenta reseñas de Google y previene quejas negativas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
