@@ -160,7 +160,7 @@ export default function App() {
 
           {/* Core Title (Supplied Copy with theme styling) */}
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-slate-900 tracking-tight leading-[1.15] max-w-4xl mx-auto font-sans">
-            Convierte clientes felices en <span className="text-amber-600 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200/40">reseñas de Google</span> y detecta quejas antes de que destruyan tu reputación en 7 días
+            Convierte clientes felices en <span className="text-amber-600 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200/40">reseñas de Google</span> y detecta quejas antes de que destruyan tu reputación
           </h1>
 
           {/* Subheading */}
@@ -178,7 +178,7 @@ export default function App() {
             {[
               { text: 'Instalación en 5 Minutos', icon: '⚡' },
               { text: 'Filtro Anti-Reseñas 1★', icon: '🛡️' },
-              { text: 'Alertas por WhatsApp', icon: '📱' },
+              { text: 'Alertas por la app', icon: '📱' },
               { text: '100% Sin Hardware Extra', icon: '🔌' },
             ].map((badge, idx) => (
               <div key={idx} className="bg-white/80 backdrop-blur-sm border border-slate-200/80 p-3 rounded-2xl flex items-center justify-center gap-2 text-slate-800 shadow-sm hover:shadow transition-shadow">
@@ -210,7 +210,7 @@ export default function App() {
           <div className="pt-4 flex items-center justify-center gap-6 text-[10px] sm:text-xs text-slate-500 font-semibold uppercase tracking-wider">
             <span className="flex items-center gap-1.5 text-slate-600">
               <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
-              En 7 días o menos
+              Alertas por la app
             </span>
             <span>•</span>
             <span className="flex items-center gap-1 text-slate-600">
