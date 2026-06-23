@@ -685,7 +685,6 @@ export default function App() {
                   <li className="flex items-center gap-1.5"><span className="text-[#facc15]">✓</span> Filtro de reseñas seguro de Google</li>
                   <li className="flex items-center gap-1.5"><span className="text-[#facc15]">✓</span> Bono Centro de Reputación My Business</li>
                   <li className="flex items-center gap-1.5"><span className="text-[#facc15]">✓</span> Bono Alertas de Riesgo Inmediatas</li>
-                  <li className="flex items-center gap-1.5"><span className="text-[#facc15]">✓</span> Bono Reporte AI semanal en correo</li>
                 </ul>
               </div>
 
@@ -737,13 +736,6 @@ export default function App() {
                       <p className="font-extrabold text-slate-900">Captura y Filtro de Satisfacción en Tiempo Real</p>
                       <p className="text-slate-500 text-xs">Conversión automática instantánea de clientes felices directamente en reseñas de Google.</p>
                     </div>
-                  </div>
-
-                  {/* Included Bonuses list */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-slate-200 text-xs text-slate-500">
-                    <span className="flex items-center gap-2">🎁 <span className="text-slate-900 font-bold">Bono #1:</span> Centro de Reputación Google</span>
-                    <span className="flex items-center gap-2">🎁 <span className="text-slate-900 font-bold">Bono #2:</span> Alertas Inteligentes de Riesgo</span>
-                    <span className="flex items-center gap-2 sm:col-span-2">🎁 <span className="text-slate-900 font-bold">Bono #3:</span> Informe Mensual AI de Desempeño</span>
                   </div>
                 </div>
               </div>
