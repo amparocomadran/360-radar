@@ -29,9 +29,10 @@ import { Lead } from './types';
 
 // Importing our high-fidelity modular components
 import ReviewSimulator from './components/ReviewSimulator';
-import RoiCalculator from './components/RoiCalculator';
+
 import FaqSection from './components/FaqSection';
 import LeadModal from './components/LeadModal';
+import OwnerDashboard from './components/OwnerDashboard';
 
 export default function App() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -40,6 +41,7 @@ export default function App() {
   // Leads list for demo visibility
   const [localLeads, setLocalLeads] = useState<Lead[]>([]);
   const [showAdminPanel, setShowAdminPanel] = useState<boolean>(false);
+  const [showOwnerDashboard, setShowOwnerDashboard] = useState<boolean>(false);
 
   // Load leads from localStorage for presentation
   const loadLeads = () => {
@@ -75,6 +77,16 @@ export default function App() {
     setIsModalOpen(true);
   };
 
+  if (showOwnerDashboard) {
+    return (
+      <OwnerDashboard 
+        onBackToLanding={() => setShowOwnerDashboard(false)}
+        registeredBusinessName={localLeads[0]?.businessName}
+        registeredOwnerEmail={localLeads[0]?.email}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#070b13] text-[#f8fafc] font-sans antialiased selection:bg-[#facc15] selection:text-[#0f172a]">
       
@@ -95,33 +107,23 @@ export default function App() {
               style={{ imageRendering: 'auto' }}
               referrerPolicy="no-referrer"
             />
-            <div className="bg-[#facc15] text-[#0f172a] p-1.5 rounded-lg font-black text-xs sm:text-sm tracking-tighter flex items-center justify-center gap-1 shadow-md shadow-yellow-500/10 hidden sm:flex">
-              <span>RADAR 360</span>
-            </div>
-            <span className="hidden md:inline-block text-[10px] sm:text-xs font-semibold text-slate-700 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-md">
-              Edición Gastronómica
-            </span>
           </div>
 
           <div className="flex items-center gap-3 sm:gap-4">
             <a 
-              href="#calculadora" 
+              href="#simulador-en-vivo" 
               className="hidden md:inline-block text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors"
             >
-              Calcular Pérdidas
+              Prueba Interactiva
             </a>
-            <a 
-              href="#bonos" 
-              className="hidden lg:inline-block text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors"
-            >
-              Bonos Incluidos
-            </a>
+
             <a 
               href="#faq-section" 
               className="text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors mr-1 sm:mr-2"
             >
               Preguntas
             </a>
+
             <button
               onClick={() => openCheckout('yearly')}
               className="bg-[#facc15] hover:bg-yellow-400 text-[#0f172a] font-extrabold text-[10px] sm:text-xs px-3.5 sm:px-4 py-2 rounded-full transition-all shadow-md shadow-yellow-500/15 active:scale-95 cursor-pointer uppercase tracking-wider"
@@ -190,17 +192,18 @@ export default function App() {
           <div className="pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               onClick={() => openCheckout('yearly')}
-              className="w-full sm:w-auto bg-[#facc15] hover:bg-yellow-400 text-[#0f172a] font-extrabold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all text-xs sm:text-sm tracking-widest cursor-pointer uppercase flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-98"
+              className="w-full sm:w-auto bg-[#facc15] hover:bg-yellow-400 text-[#0f172a] font-extrabold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all text-xs sm:text-sm tracking-widest cursor-pointer uppercase flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-98 animate-pulse"
             >
               <span>QUIERO PROTEGER MI REPUTACIÓN AHORA</span>
               <ArrowRight className="w-4 h-4 shrink-0 font-bold" />
             </button>
             <a
-              href="#calculadora"
-              className="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold px-8 py-4 rounded-full transition-all text-xs sm:text-sm cursor-pointer text-center block shadow-sm hover:shadow"
+              href="#simulador-en-vivo"
+              className="w-full sm:w-auto bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-extrabold px-8 py-4 rounded-full transition-all text-xs sm:text-sm cursor-pointer text-center block shadow-sm hover:shadow"
             >
-              Calcular Pérdida en Mi Restaurante
+              Probar Demo de Teléfono 📱
             </a>
+
           </div>
 
           {/* High Context Trust Ticker */}
@@ -526,10 +529,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* ROI CALCULATOR WIDGET SECTION */}
-      <section className="py-20 bg-slate-900 px-4 scroll-mt-20" id="calculadora">
-        <RoiCalculator />
-      </section>
+
 
       {/* SECTION 6: WHAT TO EXPECT (¿QUÉ PUEDES ESPERAR?) - LIGHT THEMATIC */}
       <section className="py-20 sm:py-28 bg-slate-50 text-slate-900 px-4 border-t border-slate-200/80" id="expectativa">
@@ -586,99 +586,6 @@ export default function App() {
               <p className="text-xs sm:text-sm text-slate-600 leading-normal">
                 Sabrás exactamente qué ocurre en tus mesas, cuándo ocurre y qué comidas o meseros presentan mayor número de incidencias o halagos.
               </p>
-            </div>
-
-          </div>
-
-        </div>
-      </section>
-
-      {/* SECTION 7: BONOS EXCLUSIVOS - PREMIUM DARK GRADIENT BACKGROUND */}
-      <section className="py-20 sm:py-32 bg-slate-900 text-white border-y border-slate-800 px-4 relative overflow-hidden" id="bonos">
-        
-        {/* Soft yellow light blur to frame the bonuses premium look */}
-        <div className="absolute top-1/4 right-0 w-80 h-80 bg-yellow-500/5 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="max-w-6xl mx-auto relative z-10">
-          
-          <div className="text-center max-w-2xl mx-auto mb-16 sm:mb-20">
-            <span className="bg-yellow-400/10 text-yellow-400 border border-yellow-400/20 text-xs px-3.5 py-1.5 rounded-full font-bold uppercase tracking-widest">
-              PAQUETE ADICIONAL ACELERADO
-            </span>
-            <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight mt-4">
-              Bonos Exclusivos Incluidos
-            </h2>
-            <p className="text-sm text-slate-400 mt-3">
-              Si registras tu restaurante hoy en nuestra oferta de lanzamiento, te llevas todos estos complementos optimizados sin pagar un solo dólar adicional.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-            
-            {/* Bono 1 */}
-            <div className="bg-slate-950 border border-slate-800/80 rounded-3xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden">
-              <div className="absolute top-0 right-0 bg-yellow-400/10 text-yellow-400 px-3.5 py-1 rounded-bl-xl text-[9px] font-black uppercase tracking-wider">
-                Bono #1 Incluido
-              </div>
-              <div className="space-y-4">
-                <div className="w-10 h-10 bg-yellow-400/10 text-yellow-400 rounded-xl flex items-center justify-center text-lg shrink-0">
-                  <Gift className="w-5 h-5 text-yellow-400" />
-                </div>
-                <h3 className="text-base sm:text-lg font-black text-white tracking-tight">
-                  CENTRO DE REPUTACIÓN GOOGLE
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-normal">
-                  Todas tus reseñas de Google organizadas por fecha dentro de la misma pantalla del panel. No más entrar y salir de plataformas ni perder tiempo valioso buscando comentarios. Todo centralizado y visible en tiempo real.
-                </p>
-              </div>
-              <div className="pt-6 border-t border-slate-900 mt-6 flex justify-between items-center text-[11px] font-bold text-yellow-400 uppercase tracking-widest">
-                <span>Valor: $99/mes</span>
-                <span className="text-slate-500 font-extrabold text-[#facc15]">GRATIS HOY</span>
-              </div>
-            </div>
-
-            {/* Bono 2 */}
-            <div className="bg-slate-950 border border-slate-800/80 rounded-3xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden">
-              <div className="absolute top-0 right-0 bg-yellow-400/10 text-yellow-400 px-3.5 py-1 rounded-bl-xl text-[9px] font-black uppercase tracking-wider">
-                Bono #2 Incluido
-              </div>
-              <div className="space-y-4">
-                <div className="w-10 h-10 bg-yellow-400/10 text-yellow-400 rounded-xl flex items-center justify-center text-lg shrink-0">
-                  <Flame className="w-5 h-5 text-yellow-400 animate-pulse" />
-                </div>
-                <h3 className="text-base sm:text-lg font-black text-white tracking-tight">
-                  ALERTAS INTELIGENTES DE RIESGO
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-normal">
-                  Cuando un cliente selecciona una experiencia de pocas estrellas, el sistema genera de inmediato una alerta inmediata de WhatsApp o correo electrónico. Actúa al instante, no horas después, para evitar que la molestia explote públicamente.
-                </p>
-              </div>
-              <div className="pt-6 border-t border-slate-900 mt-6 flex justify-between items-center text-[11px] font-bold text-yellow-400 uppercase tracking-widest">
-                <span>Valor: $149/mes</span>
-                <span className="text-slate-500 font-extrabold text-[#facc15]">GRATIS HOY</span>
-              </div>
-            </div>
-
-            {/* Bono 3 */}
-            <div className="bg-slate-950 border border-slate-800/80 rounded-3xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden">
-              <div className="absolute top-0 right-0 bg-yellow-400/10 text-yellow-400 px-3.5 py-1 rounded-bl-xl text-[9px] font-black uppercase tracking-wider">
-                Bono #3 Incluido
-              </div>
-              <div className="space-y-4">
-                <div className="w-10 h-10 bg-yellow-400/10 text-yellow-400 rounded-xl flex items-center justify-center text-lg shrink-0">
-                  <TrendingUp className="w-5 h-5 text-yellow-400" />
-                </div>
-                <h3 className="text-base sm:text-lg font-black text-white tracking-tight">
-                  INFORME EJECUTIVO AI
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-normal">
-                  Cada semana recibirás un análisis automático de inteligencia artificial que identifica las principales causas de insatisfacción, horarios problemáticos, mesas más conflictivas y oportunidades doradas de servicio. Sin interpretar datos complejos ni consultorías caras.
-                </p>
-              </div>
-              <div className="pt-6 border-t border-slate-900 mt-6 flex justify-between items-center text-[11px] font-bold text-yellow-400 uppercase tracking-widest">
-                <span>Valor: $199/mes</span>
-                <span className="text-slate-500 font-extrabold text-[#facc15]">GRATIS HOY</span>
-              </div>
             </div>
 
           </div>
@@ -765,11 +672,11 @@ export default function App() {
               <div>
                 <dt className="text-xs font-black uppercase tracking-wider text-[#facc15]">LA MEJOR OPCIÓN CON LAUNCH PROMO</dt>
                 <dd className="font-black text-white text-2xl sm:text-3xl mt-2">RADAR 360 COMPLETO</dd>
-                <p className="text-xs text-slate-400 mt-1">Con bonos especiales de por vida</p>
+                <p className="text-xs text-slate-400 mt-1">Con el mejor precio garantizado de por vida</p>
                 
                 <div className="py-4 my-4 border-y border-slate-900 flex items-baseline gap-1">
-                  <span className="text-xs text-slate-400 line-through mr-1 font-mono">$199 USD</span>
-                  <span className="text-3xl sm:text-4xl font-black text-[#facc15] font-mono">$29</span>
+                  <span className="text-xs text-slate-400 line-through mr-1 font-mono">$99 USD</span>
+                  <span className="text-3xl sm:text-4xl font-black text-[#facc15] font-mono">$19,99</span>
                   <span className="text-xs text-yellow-500/90 font-medium">USD / mes</span>
                 </div>
 
@@ -848,8 +755,8 @@ export default function App() {
                 </p>
                 <div className="space-y-1">
                   <p className="text-[11px] text-slate-400 uppercase tracking-widest block font-bold">Todo Incluido hoy por solo</p>
-                  <p className="text-2xl sm:text-4xl font-black text-[#facc15] font-mono tracking-tight">$29 USD / mes</p>
-                  <p className="text-[10px] text-yellow-405 font-medium">O elige plan anual para ahorrar más de $100 adicionales</p>
+                  <p className="text-2xl sm:text-4xl font-black text-[#facc15] font-mono tracking-tight">$19,99 USD / mes</p>
+                  <p className="text-[10px] text-yellow-500 font-medium">O elige el plan anual por solo $199,99 USD / año para un mayor ahorro</p>
                 </div>
 
                 <button
@@ -936,8 +843,7 @@ export default function App() {
             <span>•</span>
             <a href="#beneficios" className="hover:underline">Beneficios</a>
             <span>•</span>
-            <a href="#calculadora" className="hover:underline">Cálculo ROI</a>
-            <span>•</span>
+
             <a href="#cierre" className="hover:underline">Soporte</a>
           </div>
         </div>
@@ -1020,6 +926,7 @@ export default function App() {
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
         defaultPlan={modalDefaultPlan} 
+        onEnterDashboard={() => setShowOwnerDashboard(true)}
       />
 
     </div>

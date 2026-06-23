@@ -50,7 +50,7 @@ export default function FaqSection() {
     {
       id: '9',
       question: '¿Gozaré de soporte post-venta constante si mi menú cambia o deseo agregar mesas?',
-      answer: 'Estarás plenamente acompañado. Nuestro canal de soporte especializado vía correo electrónico (amparocomadranp@gmail.com) y mesa de ayuda directa estará disponible para ti los 365 días del año. Si decides remodelar la sala, añadir mesas adicionales o reconfigurar las zonas, nosotros actualizaremos tu base de códigos QR sin coste adicional para ti.'
+      answer: 'Estarás plenamente acompañado. Nuestro canal de soporte especializado vía correo electrónico (radar360negociosgastronomicos@gmail.com) y mesa de ayuda directa estará disponible para ti los 365 días del año. Si decides remodelar la sala, añadir mesas adicionales o reconfigurar las zonas, nosotros actualizaremos tu base de códigos QR sin coste adicional para ti.'
     },
     {
       id: '10',
@@ -126,7 +126,7 @@ export default function FaqSection() {
             ¿Tienes otra pregunta específica para tu restaurante o cadena gastronómica?
           </p>
           <a
-            href="mailto:amparocomadranp@gmail.com"
+            href="mailto:radar360negociosgastronomicos@gmail.com"
             className="text-[#facc15] hover:text-yellow-400 font-bold text-xs sm:text-sm inline-flex items-center gap-1.5 mt-2 transition-colors hover:underline"
           >
             Pregúntanos por correo directo a nuestro equipo de ingenieros y especialistas

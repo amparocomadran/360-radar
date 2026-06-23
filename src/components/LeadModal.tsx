@@ -18,9 +18,10 @@ interface LeadModalProps {
   isOpen: boolean;
   onClose: () => void;
   defaultPlan: 'monthly' | 'yearly';
+  onEnterDashboard?: () => void;
 }
 
-export default function LeadModal({ isOpen, onClose, defaultPlan }: LeadModalProps) {
+export default function LeadModal({ isOpen, onClose, defaultPlan, onEnterDashboard }: LeadModalProps) {
   const [plan, setPlan] = useState<'monthly' | 'yearly'>(defaultPlan);
   const [businessName, setBusinessName] = useState('');
   const [ownerName, setOwnerName] = useState('');
@@ -64,11 +65,17 @@ export default function LeadModal({ isOpen, onClose, defaultPlan }: LeadModalPro
 
       setLoading(false);
       setIsSubmitted(true);
+
+      // Programmatic redirect based on plan choice
+      const redirectUrl = plan === 'monthly' ? "https://pay.hotmart.com/S106453876T" : "https://pay.hotmart.com/X106454109S";
+      setTimeout(() => {
+        window.location.href = redirectUrl;
+      }, 1500);
     }, 1200);
   };
 
-  const planPriceDisplay = plan === 'monthly' ? '$29 USD / mes' : '$245 USD / año';
-  const planDiscountDisplay = plan === 'yearly' ? 'Ahorras $103 USD al año' : 'Cancela cuando quieras';
+  const planPriceDisplay = plan === 'monthly' ? '$19,99 USD / mes' : '$199,99 USD / año';
+  const planDiscountDisplay = plan === 'yearly' ? 'Ahorras $39,89 USD al año' : 'Cancela cuando quieras';
 
   return (
     <AnimatePresence>
@@ -126,7 +133,7 @@ export default function LeadModal({ isOpen, onClose, defaultPlan }: LeadModalPro
                         : 'text-slate-400 hover:text-white'
                     }`}
                   >
-                    Mensual ($29/mes)
+                    Mensual ($19,99/mes)
                   </button>
                   <button
                     type="button"
@@ -137,7 +144,7 @@ export default function LeadModal({ isOpen, onClose, defaultPlan }: LeadModalPro
                         : 'text-slate-400 hover:text-white'
                     }`}
                   >
-                    Anual ($245/año)
+                    Anual ($199,99/año)
                     <span className="absolute -top-1.5 -right-1.5 bg-yellow-400 text-slate-950 font-black text-[7.5px] uppercase tracking-normal px-1 py-0.5 rounded shadow">
                       Super Ahorro
                     </span>
@@ -154,6 +161,11 @@ export default function LeadModal({ isOpen, onClose, defaultPlan }: LeadModalPro
                     <span className="text-sm font-black text-[#facc15] font-mono block">{planPriceDisplay}</span>
                     <span className="text-[9px] text-[#facc15] font-semibold">{planDiscountDisplay}</span>
                   </div>
+                </div>
+
+                <div className="mt-3 text-[10px] text-yellow-450 bg-yellow-400/5 border border-yellow-400/10 p-2.5 rounded-xl flex items-center gap-2">
+                  <span className="shrink-0">🔒</span>
+                  <span>El pago de tu plan {plan === 'yearly' ? 'anual' : 'mensual'} se realiza de forma 100% segura mediante <strong>Hotmart</strong>.</span>
                 </div>
 
                 {/* Lead Submission Form */}
@@ -275,12 +287,21 @@ export default function LeadModal({ isOpen, onClose, defaultPlan }: LeadModalPro
                   <span>Un consultor asignado validará tus menús e integrará tu ficha de Google Maps en un máximo de 12 horas hábiles.</span>
                 </div>
 
-                <div className="pt-2">
+                <div className="pt-2 space-y-2">
+                  <a
+                    href={plan === 'monthly' ? "https://pay.hotmart.com/S106453876T" : "https://pay.hotmart.com/X106454109S"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full bg-[#facc15] hover:bg-yellow-400 text-slate-950 font-black text-xs py-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 uppercase tracking-wider"
+                  >
+                    💳 COMPLETAR PAGO EN HOTMART AHORA
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
                   <button
                     onClick={onClose}
-                    className="w-full bg-slate-800 hover:bg-slate-750 text-white font-bold text-xs py-3 rounded-xl transition-all cursor-pointer"
+                    className="w-full bg-slate-800 hover:bg-slate-755 text-slate-300 font-bold text-xs py-2.5 rounded-md transition-all cursor-pointer"
                   >
-                    Cerrar Ventana y Continuar Navegando
+                    Volver a la Landing Page
                   </button>
                 </div>
               </div>
