@@ -672,7 +672,7 @@ export default function App() {
               <div>
                 <dt className="text-xs font-black uppercase tracking-wider text-[#facc15]">LA MEJOR OPCIÓN CON LAUNCH PROMO</dt>
                 <dd className="font-black text-white text-2xl sm:text-3xl mt-2">RADAR 360 COMPLETO</dd>
-                <p className="text-xs text-slate-400 mt-1">Con el mejor precio garantizado de por vida</p>
+                <p className="text-xs text-slate-400 mt-1">Con el mejor precio garantizado por un año</p>
                 
                 <div className="py-4 my-4 border-y border-slate-900 flex items-baseline gap-1">
                   <span className="text-xs text-slate-400 line-through mr-1 font-mono">$99 USD</span>
@@ -743,7 +743,7 @@ export default function App() {
               {/* Conversion Box with direct button (Keep Dark/Sleek for high emphasis) */}
               <div className="lg:col-span-5 bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center space-y-4">
                 <p className="text-xs sm:text-sm text-slate-300">
-                  Garantiza este precio de lanzamiento de por vida y blinda la recomendación de tu sucursal.
+                  Garantiza este precio de lanzamiento por un año entero y blinda la recomendación de tu sucursal.
                 </p>
                 <div className="space-y-1">
                   <p className="text-[11px] text-slate-400 uppercase tracking-widest block font-bold">Todo Incluido hoy por solo</p>
@@ -815,7 +815,7 @@ export default function App() {
           </div>
 
           <p className="text-xs text-slate-500">
-            Únete a cientos de marcas gastronómicas inteligentes. Paga en pesos o dólares de forma segura de por vida.
+            Únete a cientos de marcas gastronómicas inteligentes. Paga en pesos o dólares de forma segura con precio congelado por 1 año.
           </p>
 
         </div>
