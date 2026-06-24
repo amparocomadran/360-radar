@@ -119,7 +119,7 @@ export default function LeadModal({ isOpen, onClose, defaultPlan, onEnterDashboa
                   Protege la reputación de tu restaurante hoy mismo
                 </h3>
                 <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
-                  Completa tus datos debajo. Un especialista configurará tus códigos QR premium y te dará acceso al panel inteligente de manera personalizada en las próximas 12 horas.
+                  Completa tus datos debajo. En menos de 3 horas se te dará acceso a la plataforma vía email. Si no te llega, por favor contacta a nuestro correo o WhatsApp de soporte.
                 </p>
 
                 {/* Plan Toggle Selector inside Modal */}
