@@ -91,8 +91,9 @@ export default function App() {
   };
 
   const openCheckout = (preferredPlan: 'monthly' | 'yearly') => {
-    setModalDefaultPlan(preferredPlan);
-    setIsModalOpen(true);
+    const monthlyUrl = "https://pay.hotmart.com/S106453876T?sck=HOTMART_PRODUCT_PAGE&off=tkqqz1lm&hotfeature=32&_gl=1*lsqdq0*_gcl_aw*R0NMLjE3ODIzODc5MDguQ2owS0NRandvX1BSQmhETkFSSXNBRWNWQUxVUGYwZHNkU3g4X29tTFl1MWNCdVd3MFhDZHc2dkZsVFlCYkFqWGw1cS1vVUNUYmU4LS1Wb2FBcDJJRUFMd193Y0I.*_gcl_au*OTk2ODIyMzQ2LjE3ODIzODMxMDE.*FPAU*OTk2ODIyMzQ2LjE3ODIzODMxMDE.*_ga*MzE2MDAwNDI2LjE3ODIzODMxMDE.*_ga_GQH2V1F11Q*czE3ODI0MTg4NzAkbzMkZzAkdDE3ODI0MTg4NzAkajYwJGwxJGgyNDY2NzUzNDI.&bid=1782418933378";
+    const yearlyUrl = "https://pay.hotmart.com/X106454109S?sck=HOTMART_PRODUCT_PAGE&off=9p39kiwk&hotfeature=32&_gl=1*1lo4ma4*_gcl_aw*R0NMLjE3ODE3MzM1NzAuQ2owS0NRandpOG5SQmhEaEFSSXNBSFpmX3BhSXU4ZU9nazE2QlRUZzFseGUyV2RpVXc0eWd1bjZFV2lxMnhUVzdpYXpxaFkwQ0J2d1pJZ2FBdUNSRUFMd193Y0I.*_gcl_au*MjExMDg3Nzk5My4xNzgxNzMzNTE0LjE3NzY1NjM0MjEuMTc4MjM5ODQzMy4xNzgyMzk4NzE4*FPAU*MjExMDg3Nzk5My4xNzgxNzMzNTE0*_ga*MTczNjM0NjM2MS4xNzgxNzMzNTEz*_ga_GQH2V1F11Q*czE3ODI0MTkxMzQkbzE4JGcwJHQxNzgyNDE5MTM0JGo2MCRsMSRoODk0NTU5NzY.&bid=1782419141423";
+    window.location.href = preferredPlan === 'monthly' ? monthlyUrl : yearlyUrl;
   };
 
   if (showOwnerDashboard) {
@@ -713,12 +714,18 @@ export default function App() {
                 </ul>
               </div>
 
-              <div className="pt-6 mt-6">
+              <div className="pt-6 mt-6 space-y-3">
+                <button
+                  onClick={() => openCheckout('monthly')}
+                  className="w-full bg-slate-900 hover:bg-slate-850 text-[#facc15] border-2 border-[#facc15] font-black text-xs py-3.5 px-4 rounded-full transition-all text-center uppercase tracking-tight cursor-pointer shadow-md"
+                >
+                  Suscripción Mensual ($19,99 USD)
+                </button>
                 <button
                   onClick={() => openCheckout('yearly')}
                   className="w-full bg-[#facc15] hover:bg-yellow-400 text-[#0f172a] font-black text-xs py-3.5 px-4 rounded-full shadow-lg transition-all text-center uppercase tracking-tight cursor-pointer"
                 >
-                  Me Llevo la Oferta Ahora
+                  Suscripción Anual ($199,99 USD)
                 </button>
                 <p className="text-center text-[9px] text-slate-400 mt-2 font-medium">
                   30 días de garantía • Cancela en un clic
@@ -773,24 +780,33 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Conversion Box with direct button (Keep Dark/Sleek for high emphasis) */}
+              {/* Conversion Box with direct buttons (Keep Dark/Sleek for high emphasis) */}
               <div className="lg:col-span-5 bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center space-y-4">
                 <p className="text-xs sm:text-sm text-slate-300">
-                  Garantiza este precio de lanzamiento por un año entero y blinda la recomendación de tu sucursal.
+                  Garantiza este precio de lanzamiento y blinda la recomendación de tu sucursal gastronómica.
                 </p>
                 <div className="space-y-1">
-                  <p className="text-[11px] text-slate-400 uppercase tracking-widest block font-bold">Todo Incluido hoy por solo</p>
-                  <p className="text-2xl sm:text-4xl font-black text-[#facc15] font-mono tracking-tight">$19,99 USD / mes</p>
-                  <p className="text-[10px] text-yellow-500 font-medium">O elige el plan anual por solo $199,99 USD / año para un mayor ahorro</p>
+                  <p className="text-[11px] text-slate-400 uppercase tracking-widest block font-bold">Selecciona tu Plan</p>
+                  <p className="text-[10px] text-yellow-500 font-medium">Paga de forma 100% segura mediante Hotmart</p>
                 </div>
 
-                <button
-                  onClick={() => openCheckout('yearly')}
-                  className="w-full bg-[#facc15] hover:bg-yellow-455 text-[#0f172a] font-extrabold py-4 rounded-full text-xs sm:text-sm shadow-xl transition-all uppercase tracking-tight cursor-pointer active:scale-95 flex items-center justify-center gap-1.5"
-                >
-                  <span>QUIERO PROTEGER MI REPUTACIÓN AHORA</span>
-                  <ArrowRight className="w-4 h-4 shrink-0 font-extrabold text-slate-900" />
-                </button>
+                <div className="space-y-3 pt-2">
+                  <button
+                    onClick={() => openCheckout('monthly')}
+                    className="w-full bg-slate-950 hover:bg-slate-900 text-[#facc15] border border-slate-800 font-extrabold py-3.5 rounded-full text-xs shadow-md transition-all uppercase tracking-tight cursor-pointer active:scale-95 flex items-center justify-center gap-1.5"
+                  >
+                    <span>Plan Mensual ($19,99 USD)</span>
+                    <ArrowRight className="w-3.5 h-3.5 shrink-0 text-[#facc15]" />
+                  </button>
+
+                  <button
+                    onClick={() => openCheckout('yearly')}
+                    className="w-full bg-[#facc15] hover:bg-yellow-400 text-[#0f172a] font-extrabold py-4 rounded-full text-xs sm:text-sm shadow-xl transition-all uppercase tracking-tight cursor-pointer active:scale-95 flex items-center justify-center gap-1.5"
+                  >
+                    <span>Plan Anual ($199,99 USD)</span>
+                    <ArrowRight className="w-4 h-4 shrink-0 font-extrabold text-slate-900" />
+                  </button>
+                </div>
 
                 <p className="text-[9.5px] text-slate-400">
                   * Sin contratos de permanencia obligatorios. Setup asistido llave en mano.
@@ -839,12 +855,20 @@ export default function App() {
               AHORA O NUNCA
             </span>
 
-            <button
-              onClick={() => openCheckout('yearly')}
-              className="w-full sm:w-auto bg-[#facc15] hover:bg-yellow-400 text-[#0f172a] font-extrabold px-10 py-5 rounded-full shadow-2xl hover:scale-[1.02] active:scale-95 transition-all text-sm uppercase cursor-pointer"
-            >
-              EMPEZAR A PROTEGER MI REPUTACIÓN AHORA
-            </button>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+              <button
+                onClick={() => openCheckout('monthly')}
+                className="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-[#facc15] border-2 border-[#facc15] font-black text-xs px-8 py-4.5 rounded-full shadow-lg transition-all uppercase tracking-tight cursor-pointer"
+              >
+                Plan Mensual ($19,99 USD)
+              </button>
+              <button
+                onClick={() => openCheckout('yearly')}
+                className="w-full sm:w-auto bg-[#facc15] hover:bg-yellow-400 text-[#0f172a] font-extrabold px-10 py-5 rounded-full shadow-2xl hover:scale-[1.02] active:scale-95 transition-all text-sm uppercase cursor-pointer"
+              >
+                Plan Anual ($199,99 USD)
+              </button>
+            </div>
           </div>
 
           <p className="text-xs text-slate-500">
