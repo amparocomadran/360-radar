@@ -67,7 +67,7 @@ export default function LeadModal({ isOpen, onClose, defaultPlan, onEnterDashboa
       setIsSubmitted(true);
 
       // Programmatic redirect based on plan choice
-      const redirectUrl = plan === 'monthly' ? "https://pay.hotmart.com/S106453876T" : "https://pay.hotmart.com/X106454109S";
+      const redirectUrl = plan === 'monthly' ? "https://go.hotmart.com/S106453876T" : "https://go.hotmart.com/X106454109S";
       setTimeout(() => {
         window.location.href = redirectUrl;
       }, 1500);
@@ -280,6 +280,10 @@ export default function LeadModal({ isOpen, onClose, defaultPlan, onEnterDashboa
                   <p className="text-xs text-slate-450 leading-relaxed font-light mt-2 pt-2 border-t border-slate-900">
                     Tu cuenta RADAR 360 se está configurando de manera exclusiva en nuestros servidores. Hemos enviado un correo de validación a <span className="text-slate-200 font-medium underline">{email}</span> y nos pondremos en contacto contigo a través de WhatsApp ({phone}) para validar el diseño físico de tus stickers QR.
                   </p>
+                  <p className="text-xs text-slate-400 leading-relaxed font-normal mt-2 pt-2 border-t border-slate-900/60 flex items-start gap-2">
+                    <span className="text-[#facc15] text-sm shrink-0">📂</span>
+                    <span><strong>Acceso Incluido:</strong> Recibirás acceso a una carpeta compartida con videos de capacitación para enseñarte a comenzar y qué configurar, cómo cancelar tu suscripción sin complicaciones si lo deseas, y videos rápidos para resolver cualquier tipo de duda.</span>
+                  </p>
                 </div>
 
                 <div className="flex items-center gap-2.5 bg-slate-850 p-3 rounded-xl border border-slate-800 text-[11px] text-slate-400 text-left leading-snug">
@@ -289,7 +293,7 @@ export default function LeadModal({ isOpen, onClose, defaultPlan, onEnterDashboa
 
                 <div className="pt-2 space-y-2">
                   <a
-                    href={plan === 'monthly' ? "https://pay.hotmart.com/S106453876T" : "https://pay.hotmart.com/X106454109S"}
+                    href={plan === 'monthly' ? "https://go.hotmart.com/S106453876T" : "https://go.hotmart.com/X106454109S"}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full bg-[#facc15] hover:bg-yellow-400 text-slate-950 font-black text-xs py-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 uppercase tracking-wider"

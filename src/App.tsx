@@ -685,6 +685,7 @@ export default function App() {
                   <li className="flex items-center gap-1.5"><span className="text-[#facc15]">✓</span> Filtro de reseñas seguro de Google</li>
                   <li className="flex items-center gap-1.5"><span className="text-[#facc15]">✓</span> Bono Centro de Reputación My Business</li>
                   <li className="flex items-center gap-1.5"><span className="text-[#facc15]">✓</span> Bono Alertas de Riesgo Inmediatas</li>
+                  <li className="flex items-center gap-1.5 text-yellow-300 font-medium"><span className="text-[#facc15]">✓</span> Bono Carpeta de Videos de Capacitación 24/7</li>
                 </ul>
               </div>
 
@@ -735,6 +736,14 @@ export default function App() {
                     <div>
                       <p className="font-extrabold text-slate-900">Captura y Filtro de Satisfacción en Tiempo Real</p>
                       <p className="text-slate-500 text-xs">Conversión automática instantánea de clientes felices directamente en reseñas de Google.</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2.5">
+                    <span className="text-amber-600 font-extrabold shrink-0 mt-0.5">🎁</span>
+                    <div>
+                      <p className="font-extrabold text-slate-900">Bono: Carpeta de Capacitación Compartida</p>
+                      <p className="text-slate-500 text-xs">Acceso directo a videos instructivos exclusivos: configuración inicial para comenzar, cómo cancelar suscripción de forma rápida y resolución de dudas comunes para capacitar a tu personal.</p>
                     </div>
                   </div>
                 </div>
