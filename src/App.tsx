@@ -33,10 +33,28 @@ import ReviewSimulator from './components/ReviewSimulator';
 import FaqSection from './components/FaqSection';
 import LeadModal from './components/LeadModal';
 import OwnerDashboard from './components/OwnerDashboard';
+import LoginModal from './components/LoginModal';
+import DinerScreen from './components/DinerScreen';
 
 export default function App() {
+  const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+  const simulateTable = params.get('simulate_table');
+  const bizName = params.get('biz');
+
+  if (simulateTable) {
+    return (
+      <DinerScreen 
+        tableNumber={simulateTable} 
+        businessName={bizName || 'Otra Vuelta Mza'} 
+      />
+    );
+  }
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
   const [modalDefaultPlan, setModalDefaultPlan] = useState<'monthly' | 'yearly'>('yearly');
+  const [demoEmail, setDemoEmail] = useState<string>('');
+  const [demoBusinessName, setDemoBusinessName] = useState<string>('');
   
   // Leads list for demo visibility
   const [localLeads, setLocalLeads] = useState<Lead[]>([]);
@@ -81,8 +99,8 @@ export default function App() {
     return (
       <OwnerDashboard 
         onBackToLanding={() => setShowOwnerDashboard(false)}
-        registeredBusinessName={localLeads[0]?.businessName}
-        registeredOwnerEmail={localLeads[0]?.email}
+        registeredBusinessName={demoBusinessName || localLeads[0]?.businessName || 'Otra Vuelta Mza'}
+        registeredOwnerEmail={demoEmail || localLeads[0]?.email || 'otravueltamza@gmail.com'}
       />
     );
   }
@@ -369,7 +387,7 @@ export default function App() {
                 Filtra las quejas en privado y eleva tus estrellas en Google automáticamente o en un clic
               </h2>
               <p className="text-sm text-slate-650 leading-relaxed font-normal">
-                No tienes que adivinar qué es lo que tus comensales opinan. Haz la simulación a la derecha: califica alto o reporta un problema común y observa la rapidez técnica con la que Radar 360 se acciona para blindarte.
+                No tienes que adivinar cómo funciona. Escanea el código QR de mesa a la derecha con tu teléfono móvil para experimentar el flujo de un comensal real, o ingresa directamente al panel de administración en vivo para ver cómo se capturan las alertas.
               </p>
               
               <ul className="space-y-2.5 pt-2 text-xs sm:text-sm text-slate-700">
@@ -387,7 +405,13 @@ export default function App() {
 
             <div className="lg:col-span-7">
               {/* Loaded simulator */}
-              <ReviewSimulator />
+              <ReviewSimulator 
+                onLaunchDemo={(email, businessName) => {
+                  setDemoEmail(email);
+                  setDemoBusinessName(businessName);
+                  setShowOwnerDashboard(true);
+                }}
+              />
             </div>
           </div>
 
@@ -928,6 +952,17 @@ export default function App() {
         onClose={() => setIsModalOpen(false)} 
         defaultPlan={modalDefaultPlan} 
         onEnterDashboard={() => setShowOwnerDashboard(true)}
+      />
+
+      {/* LOGIN OVERLAY MODAL */}
+      <LoginModal
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
+        onLoginSuccess={(email, businessName) => {
+          setDemoEmail(email);
+          setDemoBusinessName(businessName);
+          setShowOwnerDashboard(true);
+        }}
       />
 
     </div>

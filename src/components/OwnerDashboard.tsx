@@ -125,6 +125,67 @@ export default function OwnerDashboard({ onBackToLanding, registeredBusinessName
     }
   ]);
 
+  // Sync tables and scans state with localStorage and backend server dynamically
+  useEffect(() => {
+    const scansKey = `radar_scans_${registeredOwnerEmail}`;
+    const tablesKey = `radar_tables_${registeredOwnerEmail}`;
+
+    const loadFromStorageAndBackend = () => {
+      // 1. Load from local storage as offline fallback
+      const storedScans = localStorage.getItem(scansKey);
+      if (storedScans) {
+        try {
+          setScans(JSON.parse(storedScans));
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      const storedTables = localStorage.getItem(tablesKey);
+      if (storedTables) {
+        try {
+          setTables(JSON.parse(storedTables));
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      // 2. Fetch from real-time backend server
+      fetch(`/api/data?email=${encodeURIComponent(registeredOwnerEmail || 'otravueltamza@gmail.com')}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.scans && data.tables) {
+            setScans(data.scans);
+            setTables(data.tables);
+            if (data.businessName) setBusinessName(data.businessName);
+            if (data.googleMapsUrl) setGoogleMapsUrl(data.googleMapsUrl);
+            if (data.whatsappPhone) setWhatsappPhone(data.whatsappPhone);
+
+            // Keep localStorage updated
+            localStorage.setItem(scansKey, JSON.stringify(data.scans));
+            localStorage.setItem(tablesKey, JSON.stringify(data.tables));
+          }
+        })
+        .catch(err => console.error("Error fetching real-time data from server:", err));
+    };
+
+    loadFromStorageAndBackend();
+
+    // Listen to storage events (triggers when other tab updates localStorage)
+    const handleStorageChange = () => {
+      loadFromStorageAndBackend();
+    };
+    window.addEventListener('storage', handleStorageChange);
+
+    // Periodically poll backend server for fast updates
+    const interval = setInterval(loadFromStorageAndBackend, 1500);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
+  }, [registeredOwnerEmail]);
+
   const [newTableNum, setNewTableNum] = useState<string>('');
   const [showCopied, setShowCopied] = useState<string | null>(null);
 
@@ -134,7 +195,7 @@ export default function OwnerDashboard({ onBackToLanding, registeredBusinessName
     const num = parseInt(newTableNum);
     if (isNaN(num)) return;
     
-    // Check duplication
+    // Check duplication locally
     if (tables.some(t => t.number === num)) {
       alert(`La mesa ${num} ya existe.`);
       return;
@@ -148,14 +209,52 @@ export default function OwnerDashboard({ onBackToLanding, registeredBusinessName
       avgRating: 5.0
     };
 
-    setTables([...tables, newTable].sort((a,b) => a.number - b.number));
+    const updatedTables = [...tables, newTable].sort((a,b) => a.number - b.number);
+    setTables(updatedTables);
+    localStorage.setItem(`radar_tables_${registeredOwnerEmail}`, JSON.stringify(updatedTables));
     setNewTableNum('');
+
+    // Sync to backend server
+    fetch('/api/tables/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: registeredOwnerEmail || 'otravueltamza@gmail.com',
+        number: num
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data && data.success) {
+        setTables(data.tables);
+      }
+    })
+    .catch(err => console.error("Error adding table to server:", err));
   };
 
   // Remove table
   const handleRemoveTable = (id: string) => {
     if (confirm('¿Seguro que deseas desvincular esta mesa y eliminar su código QR?')) {
-      setTables(tables.filter(t => t.id !== id));
+      const updatedTables = tables.filter(t => t.id !== id);
+      setTables(updatedTables);
+      localStorage.setItem(`radar_tables_${registeredOwnerEmail}`, JSON.stringify(updatedTables));
+
+      // Sync to backend server
+      fetch('/api/tables/remove', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: registeredOwnerEmail || 'otravueltamza@gmail.com',
+          id: id
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.success) {
+          setTables(data.tables);
+        }
+      })
+      .catch(err => console.error("Error removing table from server:", err));
     }
   };
 
@@ -164,11 +263,23 @@ export default function OwnerDashboard({ onBackToLanding, registeredBusinessName
     e.preventDefault();
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 2500);
+
+    // Sync to backend server
+    fetch('/api/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: registeredOwnerEmail || 'otravueltamza@gmail.com',
+        businessName,
+        googleMapsUrl,
+        whatsappPhone
+      })
+    }).catch(err => console.error("Error saving settings on server:", err));
   };
 
   // Copy scan link
   const copyScanLink = (tableNum: number) => {
-    const simulateUrl = `${window.location.origin}/?simulate_table=${tableNum}&biz=${encodeURIComponent(businessName)}`;
+    const simulateUrl = `https://360-radar-2-0.vercel.app/?simulate_table=${tableNum}&biz=${encodeURIComponent(businessName)}`;
     navigator.clipboard.writeText(simulateUrl);
     setShowCopied(`table-${tableNum}`);
     setTimeout(() => setShowCopied(null), 2000);
@@ -481,7 +592,7 @@ export default function OwnerDashboard({ onBackToLanding, registeredBusinessName
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {tables.map((table) => {
                 // Generate QR string representing evaluator URL for specific table
-                const dynamicUrl = `${window.location.origin}/?simulate_table=${table.number}&biz=${encodeURIComponent(businessName)}`;
+                const dynamicUrl = `https://360-radar-2-0.vercel.app/?simulate_table=${table.number}&biz=${encodeURIComponent(businessName)}`;
                 // Use a real-life public QR code generator API
                 const qrImgSrc = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(dynamicUrl)}&color=070b13&bgcolor=ffffff`;
 
