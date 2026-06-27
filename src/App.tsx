@@ -144,7 +144,7 @@ export default function App() {
             </a>
 
             <button
-              onClick={() => openCheckout('yearly')}
+              onClick={() => openCheckout('monthly')}
               className="bg-[#facc15] hover:bg-yellow-400 text-[#0f172a] font-extrabold text-[10px] sm:text-xs px-3.5 sm:px-4 py-2 rounded-full transition-all shadow-md shadow-yellow-500/15 active:scale-95 cursor-pointer uppercase tracking-wider"
             >
               Garantizar Acceso
