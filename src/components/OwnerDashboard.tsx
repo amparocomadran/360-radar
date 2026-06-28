@@ -23,6 +23,7 @@ interface OwnerDashboardProps {
   onBackToLanding: () => void;
   registeredBusinessName?: string;
   registeredOwnerEmail?: string;
+  hideBackBtn?: boolean;
 }
 
 interface TableConfig {
@@ -43,7 +44,7 @@ interface SimulatedScan {
   clientPhone?: string;
 }
 
-export default function OwnerDashboard({ onBackToLanding, registeredBusinessName, registeredOwnerEmail }: OwnerDashboardProps) {
+export default function OwnerDashboard({ onBackToLanding, registeredBusinessName, registeredOwnerEmail, hideBackBtn = false }: OwnerDashboardProps) {
   // Config state
   const [businessName, setBusinessName] = useState<string>('Mi Restaurante Bistro');
   const [googleMapsUrl, setGoogleMapsUrl] = useState<string>('https://maps.google.com/?cid=1234567890');
@@ -316,12 +317,14 @@ export default function OwnerDashboard({ onBackToLanding, registeredBusinessName
           </div>
 
           <div className="flex items-center gap-3">
-            <button 
-              onClick={onBackToLanding}
-              className="text-xs text-slate-400 hover:text-white bg-slate-900 border border-slate-800 px-3 py-2 rounded-xl transition-all cursor-pointer"
-            >
-              ← Volver a la Landing Page
-            </button>
+            {!hideBackBtn && (
+              <button 
+                onClick={onBackToLanding}
+                className="text-xs text-slate-400 hover:text-white bg-slate-900 border border-slate-800 px-3 py-2 rounded-xl transition-all cursor-pointer"
+              >
+                ← Volver a la Landing Page
+              </button>
+            )}
             <div className="hidden md:flex items-center gap-1 text-[11px] text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full font-bold border border-emerald-500/15">
               <span className="h-2 w-2 bg-emerald-400 rounded-full animate-ping" />
               SISTEMA INTEGRADO ONLINE

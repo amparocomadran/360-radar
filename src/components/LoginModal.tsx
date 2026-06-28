@@ -6,9 +6,10 @@ interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
   onLoginSuccess: (email: string, businessName: string) => void;
+  lang?: 'es' | 'en';
 }
 
-export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginModalProps) {
+export default function LoginModal({ isOpen, onClose, onLoginSuccess, lang = 'es' }: LoginModalProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -32,7 +33,11 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
         onClose();
       } else {
         setLoading(false);
-        setError('Credenciales de demostración incorrectas. Por favor, usa las credenciales de prueba indicadas abajo.');
+        setError(
+          lang === 'en'
+            ? 'Incorrect demo credentials. Please use the test credentials provided below.'
+            : 'Credenciales de demostración incorrectas. Por favor, usa las credenciales de prueba indicadas abajo.'
+        );
       }
     }, 1200);
   };
@@ -73,10 +78,12 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
                   <KeyRound className="w-5 h-5" />
                 </div>
                 <h3 className="text-xl font-black text-white tracking-tight">
-                  Acceso de Clientes
+                  {lang === 'en' ? 'Customer Portal' : 'Acceso de Clientes'}
                 </h3>
                 <p className="text-xs text-slate-400">
-                  Ingresa tus credenciales para gestionar tus códigos QR y monitorear opiniones.
+                  {lang === 'en'
+                    ? 'Log in with your credentials to manage QR codes and monitor feedback.'
+                    : 'Ingresa tus credenciales para gestionar tus códigos QR y monitorear opiniones.'}
                 </p>
               </div>
 
@@ -93,10 +100,12 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
                   <span className="text-lg shrink-0">💡</span>
                   <div className="space-y-0.5">
                     <p className="text-xs font-extrabold text-[#facc15] flex items-center gap-1">
-                      <Sparkles className="w-3.5 h-3.5" /> INGRESAR A LA DEMO AL INSTANTE
+                      <Sparkles className="w-3.5 h-3.5" /> {lang === 'en' ? 'INSTANT DEMO SIGN-IN' : 'INGRESAR A LA DEMO AL INSTANTE'}
                     </p>
                     <p className="text-[10.5px] text-slate-300 leading-normal">
-                      Haz clic aquí para entrar directamente al panel de control de <span className="underline font-semibold">Otra Vuelta Mza</span> sin escribir contraseñas.
+                      {lang === 'en'
+                        ? <>Click here to enter the control panel of <span className="underline font-semibold">Otra Vuelta Mza</span> directly without typing a password.</>
+                        : <>Haz clic aquí para entrar directamente al panel de control de <span className="underline font-semibold">Otra Vuelta Mza</span> sin escribir contraseñas.</>}
                     </p>
                   </div>
                 </div>
@@ -113,7 +122,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
                 {/* Email Input */}
                 <div className="space-y-1">
                   <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-450">
-                    Correo Electrónico
+                    {lang === 'en' ? 'Email Address' : 'Correo Electrónico'}
                   </label>
                   <div className="relative">
                     <Mail className="absolute left-3.5 top-3.5 w-4 h-4 text-slate-500" />
@@ -122,7 +131,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="ejemplo@restaurante.com"
+                      placeholder={lang === 'en' ? 'example@restaurant.com' : 'ejemplo@restaurante.com'}
                       className="w-full bg-slate-950 border border-slate-800 focus:border-yellow-500/50 rounded-xl pl-10 pr-4 py-3 text-xs text-white placeholder-slate-600 focus:outline-none transition-colors"
                     />
                   </div>
@@ -131,7 +140,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
                 {/* Password Input */}
                 <div className="space-y-1">
                   <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-450">
-                    Contraseña
+                    {lang === 'en' ? 'Password' : 'Contraseña'}
                   </label>
                   <div className="relative">
                     <Lock className="absolute left-3.5 top-3.5 w-4 h-4 text-slate-500" />
@@ -150,17 +159,17 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-[#facc15] hover:bg-yellow-450 text-[#0f172a] font-black tracking-wider text-xs py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 uppercase"
+                  className="w-full bg-[#facc15] hover:bg-yellow-455 text-[#0f172a] font-black tracking-wider text-xs py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 uppercase"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
                       <span className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin"></span>
-                      Accediendo al Panel...
+                      {lang === 'en' ? 'Accessing Dashboard...' : 'Accediendo al Panel...'}
                     </span>
                   ) : (
                     <>
                       <ShieldCheck className="w-4 h-4" />
-                      Ingresar a RADAR 360
+                      {lang === 'en' ? 'Log in to RADAR 360' : 'Ingresar a RADAR 360'}
                     </>
                   )}
                 </button>

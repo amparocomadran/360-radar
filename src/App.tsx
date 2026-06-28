@@ -23,20 +23,37 @@ import {
   HeartHandshake, 
   Share2, 
   ThumbsUp, 
-  Trash2 
+  Trash2,
+  Globe
 } from 'lucide-react';
 import { Lead } from './types';
+import { translations } from './translations';
 
 // Importing our high-fidelity modular components
 import ReviewSimulator from './components/ReviewSimulator';
-
 import FaqSection from './components/FaqSection';
 import LeadModal from './components/LeadModal';
 import OwnerDashboard from './components/OwnerDashboard';
 import LoginModal from './components/LoginModal';
 import DinerScreen from './components/DinerScreen';
+import LandingEn from './components/LandingEn';
 
 export default function App() {
+  const [lang, setLang] = useState<'es' | 'en'>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('lang');
+      if (stored === 'es' || stored === 'en') return stored;
+    }
+    return 'es';
+  });
+
+  const handleSetLang = (newLang: 'es' | 'en') => {
+    setLang(newLang);
+    localStorage.setItem('lang', newLang);
+  };
+
+  const t = translations[lang];
+
   const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
   const simulateTable = params.get('simulate_table');
   const bizName = params.get('biz');
@@ -46,6 +63,7 @@ export default function App() {
       <DinerScreen 
         tableNumber={simulateTable} 
         businessName={bizName || 'Otra Vuelta Mza'} 
+        lang={lang}
       />
     );
   }
@@ -91,9 +109,8 @@ export default function App() {
   };
 
   const openCheckout = (preferredPlan: 'monthly' | 'yearly') => {
-    const monthlyUrl = "https://pay.hotmart.com/S106453876T?sck=HOTMART_PRODUCT_PAGE&off=tkqqz1lm&hotfeature=32&_gl=1*lsqdq0*_gcl_aw*R0NMLjE3ODIzODc5MDguQ2owS0NRandvX1BSQmhETkFSSXNBRWNWQUxVUGYwZHNkU3g4X29tTFl1MWNCdVd3MFhDZHc2dkZsVFlCYkFqWGw1cS1vVUNUYmU4LS1Wb2FBcDJJRUFMd193Y0I.*_gcl_au*OTk2ODIyMzQ2LjE3ODIzODMxMDE.*FPAU*OTk2ODIyMzQ2LjE3ODIzODMxMDE.*_ga*MzE2MDAwNDI2LjE3ODIzODMxMDE.*_ga_GQH2V1F11Q*czE3ODI0MTg4NzAkbzMkZzAkdDE3ODI0MTg4NzAkajYwJGwxJGgyNDY2NzUzNDI.&bid=1782418933378";
-    const yearlyUrl = "https://pay.hotmart.com/X106454109S?sck=HOTMART_PRODUCT_PAGE&off=9p39kiwk&hotfeature=32&_gl=1*1lo4ma4*_gcl_aw*R0NMLjE3ODE3MzM1NzAuQ2owS0NRandpOG5SQmhEaEFSSXNBSFpmX3BhSXU4ZU9nazE2QlRUZzFseGUyV2RpVXc0eWd1bjZFV2lxMnhUVzdpYXpxaFkwQ0J2d1pJZ2FBdUNSRUFMd193Y0I.*_gcl_au*MjExMDg3Nzk5My4xNzgxNzMzNTE0LjE3NzY1NjM0MjEuMTc4MjM5ODQzMy4xNzgyMzk4NzE4*FPAU*MjExMDg3Nzk5My4xNzgxNzMzNTE0*_ga*MTczNjM0NjM2MS4xNzgxNzMzNTEz*_ga_GQH2V1F11Q*czE3ODI0MTkxMzQkbzE4JGcwJHQxNzgyNDE5MTM0JGo2MCRsMSRoODk0NTU5NzY.&bid=1782419141423";
-    window.location.href = preferredPlan === 'monthly' ? monthlyUrl : yearlyUrl;
+    setModalDefaultPlan(preferredPlan);
+    setIsModalOpen(true);
   };
 
   if (showOwnerDashboard) {
@@ -106,13 +123,53 @@ export default function App() {
     );
   }
 
+  if (lang === 'en') {
+    return (
+      <>
+        <LandingEn 
+          openCheckout={openCheckout}
+          setIsLoginOpen={setIsLoginOpen}
+          handleSetLang={handleSetLang}
+          localLeads={localLeads}
+          showAdminPanel={showAdminPanel}
+          setShowAdminPanel={setShowAdminPanel}
+          clearLeads={clearLeads}
+          demoBusinessName={demoBusinessName}
+          demoEmail={demoEmail}
+          onLaunchDemo={(email, businessName) => {
+            setDemoEmail(email);
+            setDemoBusinessName(businessName);
+            setShowOwnerDashboard(true);
+          }}
+        />
+        <LeadModal 
+          isOpen={isModalOpen} 
+          onClose={() => setIsModalOpen(false)} 
+          defaultPlan={modalDefaultPlan} 
+          onEnterDashboard={() => setShowOwnerDashboard(true)}
+          lang={lang}
+        />
+        <LoginModal
+          isOpen={isLoginOpen}
+          onClose={() => setIsLoginOpen(false)}
+          onLoginSuccess={(email, businessName) => {
+            setDemoEmail(email);
+            setDemoBusinessName(businessName);
+            setShowOwnerDashboard(true);
+          }}
+          lang={lang}
+        />
+      </>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#070b13] text-[#f8fafc] font-sans antialiased selection:bg-[#facc15] selection:text-[#0f172a]">
       
       {/* TOP DECORATIVE GLOBAL FLOATING STATUS BAR */}
       <div className="bg-[#0f172a] text-[#facc15] text-center py-2 px-4 text-[11px] sm:text-xs font-black tracking-widest uppercase flex items-center justify-center gap-1.5 shadow-md">
-        <Flame className="w-4 h-4 fill-[#facc15] animate-bounce" />
-        <span>OFERTA DE LANZAMIENTO EXCLUSIVA: Descuento del 40% activo por tiempo limitado</span>
+        <Flame className="w-4 h-4 fill-[#facc15] animate-bounce shrink-0" />
+        <span>{t.promoBanner}</span>
       </div>
 
       {/* FIXED FLOATING NAVBAR */}
@@ -122,32 +179,68 @@ export default function App() {
             <img 
               src="https://i.postimg.cc/43cbHpBH/logo-sin-fondo.png" 
               alt="RADAR 360 Logo" 
-              className="h-10 sm:h-12 w-auto object-contain shrink-0 filter drop-shadow-sm" 
+              className="h-10 sm:h-12 w-auto object-contain shrink-0 filter drop-shadow-sm cursor-pointer" 
               style={{ imageRendering: 'auto' }}
               referrerPolicy="no-referrer"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             />
           </div>
 
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <a 
               href="#simulador-en-vivo" 
               className="hidden md:inline-block text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors"
             >
-              Prueba Interactiva
+              {t.headerDemoLink}
             </a>
 
             <a 
               href="#faq-section" 
-              className="text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors mr-1 sm:mr-2"
+              className="hidden sm:inline-block text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors"
             >
-              Preguntas
+              {t.headerFaqLink}
             </a>
+
+            <button 
+              onClick={() => setIsLoginOpen(true)}
+              className="text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors px-2 py-1 cursor-pointer"
+            >
+              {t.headerLogin}
+            </button>
+
+            {/* Language logo & switcher */}
+            <div className="flex items-center bg-slate-100 p-0.5 rounded-full border border-slate-200 text-[10px] font-black shrink-0 shadow-sm">
+              <button
+                onClick={() => handleSetLang('es')}
+                className={`px-2 py-1 rounded-full transition-all flex items-center gap-1 cursor-pointer ${
+                  lang === 'es'
+                    ? 'bg-[#facc15] text-[#0f172a] shadow-xs'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+                title="Español"
+              >
+                <span>🇪🇸</span>
+                <span className="hidden xs:inline">ES</span>
+              </button>
+              <button
+                onClick={() => handleSetLang('en')}
+                className={`px-2 py-1 rounded-full transition-all flex items-center gap-1 cursor-pointer ${
+                  lang === 'en'
+                    ? 'bg-[#facc15] text-[#0f172a] shadow-xs'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+                title="English"
+              >
+                <span>🇺🇸</span>
+                <span className="hidden xs:inline">EN</span>
+              </button>
+            </div>
 
             <button
               onClick={() => openCheckout('monthly')}
-              className="bg-[#facc15] hover:bg-yellow-400 text-[#0f172a] font-extrabold text-[10px] sm:text-xs px-3.5 sm:px-4 py-2 rounded-full transition-all shadow-md shadow-yellow-500/15 active:scale-95 cursor-pointer uppercase tracking-wider"
+              className="bg-[#facc15] hover:bg-yellow-400 text-[#0f172a] font-extrabold text-[10px] sm:text-xs px-3 sm:px-4 py-2 rounded-full transition-all shadow-md shadow-yellow-500/15 active:scale-95 cursor-pointer uppercase tracking-wider shrink-0"
             >
-              Garantizar Acceso
+              {t.headerCta}
             </button>
           </div>
         </div>
@@ -174,31 +267,31 @@ export default function App() {
           
           {/* Tagline */}
           <div className="inline-flex items-center gap-1.5 bg-yellow-500/10 text-yellow-800 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest border border-yellow-500/20">
-            <Sparkles className="w-3.5 h-3.5 text-yellow-700" /> RADAR 360 Negocios Gastronómicos
+            <Sparkles className="w-3.5 h-3.5 text-yellow-700" /> {t.heroTagline}
           </div>
 
           {/* Core Title (Supplied Copy with theme styling) */}
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-slate-900 tracking-tight leading-[1.15] max-w-4xl mx-auto font-sans">
-            Convierte clientes felices en <span className="text-amber-600 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200/40">reseñas de Google</span> y detecta quejas antes de que destruyan tu reputación
+            {t.heroHeadingStart}<span className="text-amber-600 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200/40">{t.heroHeadingHighlight}</span>{t.heroHeadingEnd}
           </h1>
 
           {/* Subheading */}
           <p className="text-sm sm:text-lg md:text-xl text-slate-700 font-medium max-w-3xl mx-auto leading-relaxed">
-            Sin perseguir clientes para que opinen, sin revisar plataformas una por una, sin descubrir problemas cuando ya es demasiado tarde. Solo un sistema inteligente que captura la experiencia real del cliente — <span className="font-extrabold text-yellow-800">incluso si no estás en el restaurante.</span>
+            {t.heroSubheading}
           </p>
 
           {/* Additional Positioning Statement */}
           <p className="text-xs sm:text-sm text-slate-500 font-semibold italic border-y border-slate-200 py-3.5 max-w-2xl mx-auto">
-            "El primer sistema que convierte la experiencia de cada mesa en datos, alertas y reseñas que aumentan tus ingresos."
+            {t.heroQuote}
           </p>
 
           {/* Key Quick Benefit Badges */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 pt-4 max-w-3xl mx-auto">
             {[
-              { text: 'Instalación en 5 Minutos', icon: '⚡' },
-              { text: 'Filtro Anti-Reseñas 1★', icon: '🛡️' },
-              { text: 'Alertas por la app', icon: '📱' },
-              { text: '100% Sin Hardware Extra', icon: '🔌' },
+              { text: t.heroBadge1, icon: '⚡' },
+              { text: t.heroBadge2, icon: '🛡️' },
+              { text: t.heroBadge3, icon: '📱' },
+              { text: t.heroBadge4, icon: '🔌' },
             ].map((badge, idx) => (
               <div key={idx} className="bg-white/80 backdrop-blur-sm border border-slate-200/80 p-3 rounded-2xl flex items-center justify-center gap-2 text-slate-800 shadow-sm hover:shadow transition-shadow">
                 <span className="text-sm">{badge.icon}</span>
@@ -211,37 +304,36 @@ export default function App() {
           <div className="pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               onClick={() => openCheckout('yearly')}
-              className="w-full sm:w-auto bg-[#facc15] hover:bg-yellow-400 text-[#0f172a] font-extrabold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all text-xs sm:text-sm tracking-widest cursor-pointer uppercase flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-98 animate-pulse"
+              className="w-full sm:w-auto bg-[#facc15] hover:bg-yellow-400 text-[#0f172a] font-extrabold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all text-xs sm:text-sm tracking-widest cursor-pointer uppercase flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-98"
             >
-              <span>QUIERO PROTEGER MI REPUTACIÓN AHORA</span>
+              <span>{t.heroCtaPrimary}</span>
               <ArrowRight className="w-4 h-4 shrink-0 font-bold" />
             </button>
             <a
               href="#simulador-en-vivo"
               className="w-full sm:w-auto bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-extrabold px-8 py-4 rounded-full transition-all text-xs sm:text-sm cursor-pointer text-center block shadow-sm hover:shadow"
             >
-              Probar Demo de Teléfono 📱
+              {t.heroCtaDemo}
             </a>
-
           </div>
 
           {/* High Context Trust Ticker */}
           <div className="pt-4 flex items-center justify-center gap-6 text-[10px] sm:text-xs text-slate-500 font-semibold uppercase tracking-wider">
             <span className="flex items-center gap-1.5 text-slate-600">
               <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
-              Alertas por la app
+              {t.heroTrustAlerts}
             </span>
             <span>•</span>
             <span className="flex items-center gap-1 text-slate-600">
               <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              Garantía total de satisfacción
+              {t.heroTrustSatisfaction}
             </span>
           </div>
 
         </div>
       </section>
 
-      {/* SECTION 2: WHAT WILL YOU UNLOCK? (¿QUÉ DESBLOQUEARÁS?) - PREMIUM DARK SLATE LAYOUT */}
+      {/* SECTION 2: WHAT WILL YOU UNLOCK? - PREMIUM DARK SLATE LAYOUT */}
       <section className="py-20 sm:py-28 bg-[#0b0f19] text-white border-y border-slate-900 relative overflow-hidden" id="beneficios">
         
         {/* Soft background pattern for dark contrast focus */}
@@ -251,13 +343,13 @@ export default function App() {
           
           <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
             <span className="bg-yellow-500/10 text-[#facc15] border border-yellow-500/20 text-xs px-3.5 py-1.5 rounded-full font-extrabold uppercase tracking-widest inline-block">
-              Funcionalidades Clave
+              {t.unlockTagline}
             </span>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight mt-4">
-              ¿Qué desbloquearás con Radar 360?
+              {t.unlockHeading}
             </h2>
             <p className="text-sm sm:text-base text-slate-300 mt-3 font-normal">
-              La artillería digital más completa del mercado gastronómico para blindar tu negocio las 24 horas.
+              {t.unlockSubheading}
             </p>
           </div>
 
@@ -271,14 +363,14 @@ export default function App() {
                   📱
                 </div>
                 <h3 className="text-lg sm:text-xl font-black text-white tracking-tight leading-snug">
-                  Sistema QR Inteligente de Atención Instantánea
+                  {t.feature1Title}
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-300 mt-3 font-normal leading-relaxed">
-                  Tus clientes pueden llamar al mesero, pedir la cuenta, solicitar ayuda o reportar problemas en segundos desde su celular. Menos espera. Más satisfacción para la clientela.
+                  {t.feature1Desc}
                 </p>
               </div>
               <div className="text-[11px] font-bold text-[#facc15] mt-4 flex items-center gap-1 uppercase tracking-wider group-hover:translate-x-1 transition-transform">
-                <span>Cero Esperas</span>
+                <span>{t.feature1Badge}</span>
                 <ChevronRight className="w-3 h-3" />
               </div>
             </div>
@@ -290,14 +382,14 @@ export default function App() {
                   ⭐
                 </div>
                 <h3 className="text-lg sm:text-xl font-black text-white tracking-tight leading-snug">
-                  Filtro de Reputación Automático
+                  {t.feature2Title}
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-300 mt-3 font-normal leading-relaxed">
-                  Los clientes felices son enviados a Google para dejar reseñas. Los clientes insatisfechos son dirigidos a un canal privado para resolver el problema antes de que se vuelva público en internet.
+                  {t.feature2Desc}
                 </p>
               </div>
               <div className="text-[11px] font-bold text-blue-400 mt-4 flex items-center gap-1 uppercase tracking-wider group-hover:translate-x-1 transition-transform">
-                <span>Tu Escudo My Business</span>
+                <span>{t.feature2Badge}</span>
                 <ChevronRight className="w-3 h-3" />
               </div>
             </div>
@@ -309,14 +401,14 @@ export default function App() {
                   🖥️
                 </div>
                 <h3 className="text-lg sm:text-xl font-black text-white tracking-tight leading-snug">
-                  Panel Unificado de Experiencia
+                  {t.feature3Title}
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-300 mt-3 font-normal leading-relaxed">
-                  Todas las solicitudes, comentarios privados y calificaciones de mesas organizadas por fecha en un solo lugar. Sin caos de libretas ni pérdida de información crucial para el negocio.
+                  {t.feature3Desc}
                 </p>
               </div>
               <div className="text-[11px] font-bold text-indigo-400 mt-4 flex items-center gap-1 uppercase tracking-wider group-hover:translate-x-1 transition-transform">
-                <span>Centralización Total</span>
+                <span>{t.feature3Badge}</span>
                 <ChevronRight className="w-3 h-3" />
               </div>
             </div>
@@ -328,14 +420,14 @@ export default function App() {
                   🚨
                 </div>
                 <h3 className="text-lg sm:text-xl font-black text-white tracking-tight leading-snug">
-                  Monitor de Quejas en Tiempo Real
+                  {t.feature4Title}
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-300 mt-3 font-normal leading-relaxed">
-                  Detecta disgustos de tus comensales en el instante en que ocurren. Actúa de forma física antes de perder comensales y que paguen molestos.
+                  {t.feature4Desc}
                 </p>
               </div>
               <div className="text-[11px] font-bold text-rose-400 mt-4 flex items-center gap-1 uppercase tracking-wider group-hover:translate-x-1 transition-transform">
-                <span>Prevención de deserciones</span>
+                <span>{t.feature4Badge}</span>
                 <ChevronRight className="w-3 h-3" />
               </div>
             </div>
@@ -347,14 +439,14 @@ export default function App() {
                   📊
                 </div>
                 <h3 className="text-lg sm:text-xl font-black text-white tracking-tight leading-snug">
-                  Análisis Inteligente de Tendencias Gastronómicas
+                  {t.feature5Title}
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-300 mt-3 font-normal leading-relaxed">
-                  Descubre exactamente qué platillo o bebida está generando malas experiencias, qué números de mesas tienen más problemas y qué horarios están afectando el servicio mensual de tus ventas de manera invisible.
+                  {t.feature5Desc}
                 </p>
               </div>
               <div className="text-[11px] font-bold text-amber-400 mt-4 flex items-center gap-1 uppercase tracking-wider group-hover:translate-x-1 transition-transform">
-                <span>Optimización de Operaciones</span>
+                <span>{t.feature5Badge}</span>
                 <ChevronRight className="w-3 h-3" />
               </div>
             </div>
@@ -367,7 +459,7 @@ export default function App() {
               onClick={() => openCheckout('yearly')}
               className="bg-[#facc15] hover:bg-yellow-400 text-slate-950 font-extrabold text-xs sm:text-sm px-8 py-4 rounded-full shadow-md transition-all cursor-pointer inline-flex items-center gap-2"
             >
-              <span>ADQUIRIR MI ACCESO SEGURO</span>
+              <span>{t.unlockCta}</span>
               <ArrowRight className="w-4 h-4 text-slate-950" />
             </button>
           </div>
@@ -382,24 +474,24 @@ export default function App() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-10">
             <div className="lg:col-span-5 text-left space-y-4">
               <span className="bg-yellow-500/10 text-yellow-800 border border-yellow-500/20 text-xs px-3.5 py-1.5 rounded-full font-bold uppercase tracking-wider inline-block">
-                Prueba Interactiva
+                {t.demoTagline}
               </span>
               <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
-                Filtra las quejas en privado y eleva tus estrellas en Google automáticamente o en un clic
+                {t.demoHeading}
               </h2>
               <p className="text-sm text-slate-650 leading-relaxed font-normal">
-                No tienes que adivinar cómo funciona. Escanea el código QR de mesa a la derecha con tu teléfono móvil para experimentar el flujo de un comensal real, o ingresa directamente al panel de administración en vivo para ver cómo se capturan las alertas.
+                {t.demoDesc}
               </p>
               
               <ul className="space-y-2.5 pt-2 text-xs sm:text-sm text-slate-700">
                 <li className="flex items-center gap-2">
-                  <span className="text-amber-650 font-black">✓</span> Los clientes contentos van directos a tu enlace Maps
+                  <span className="text-amber-655 font-black">✓</span> {t.demoCheck1}
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="text-amber-655 font-black">✓</span> Alertas instantáneas en mesa protegen el servicio
+                  <span className="text-amber-655 font-black">✓</span> {t.demoCheck2}
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="text-amber-650 font-black">✓</span> Evita que comensales molestos escriban en TripAdvisor o Google
+                  <span className="text-amber-655 font-black">✓</span> {t.demoCheck3}
                 </li>
               </ul>
             </div>
@@ -407,6 +499,7 @@ export default function App() {
             <div className="lg:col-span-7">
               {/* Loaded simulator */}
               <ReviewSimulator 
+                lang={lang}
                 onLaunchDemo={(email, businessName) => {
                   setDemoEmail(email);
                   setDemoBusinessName(businessName);
@@ -429,57 +522,55 @@ export default function App() {
           <div className="space-y-6 sm:space-y-8 relative z-10 border-l-4 border-rose-600 pl-6 sm:pl-10">
             
             <p className="text-xs sm:text-sm font-black text-rose-500 uppercase tracking-widest leading-none">
-              LA CRUDA REALIDAD DE LA INDUSTRIA
+              {t.realityTagline}
             </p>
 
             {/* Primary Headline (Supplied Copy) */}
             <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-white tracking-tight leading-tight uppercase">
-              La mayoría de los restaurantes descubre sus problemas cuando ya perdieron al cliente
+              {t.realityHeading}
             </h2>
 
             {/* Core Emotional Text provided */}
             <div className="text-sm sm:text-lg text-slate-300 space-y-4 font-light leading-relaxed">
-              <p className="font-semibold text-white">Un cliente molesto rara vez se queja.</p>
-              <p>Simplemente se va.</p>
-              <p className="text-rose-400 font-bold">Y después aparece una estrella en Google.</p>
-              <p className="font-bold text-white uppercase text-xl">Una.</p>
-              <p>Destruyendo semanas enteros de esfuerzo de todo tu equipo de cocina y sala.</p>
+              <p className="font-semibold text-white">{t.realityQuote}</p>
+              <p>{t.realityLine1}</p>
+              <p className="text-rose-400 font-bold">{t.realityLine2}</p>
+              <p className="font-bold text-white uppercase text-xl">{t.realityLine3}</p>
+              <p>{t.realityLine4}</p>
               <p className="italic bg-rose-955/20 border border-rose-900/25 p-3 rounded-xl text-slate-300">
-                Mientras tú sigues creyendo que todo está funcionando bien en tu negocio gastronómico.
+                {t.realityQuoteBox}
               </p>
-              <p>Porque nadie te avisó.</p>
-              <p>Porque nadie levantó la mano a tiempo.</p>
-              <p className="text-rose-400 font-semibold">Porque cuando finalmente viste el problema en redes, ya estaba publicado frente a miles de nuevos comensales potenciales.</p>
-              <p>Entonces empiezas a hacer lo que hacen todos los gerentes agobiados...</p>
+              <p>{t.realityLine5}</p>
+              <p>{t.realityLine6}</p>
+              <p className="text-rose-400 font-semibold">{t.realityLine7}</p>
+              <p>{t.realityLine8}</p>
               
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm text-slate-400 font-medium pl-4 list-disc">
-                <li>Preguntar a ciegas</li>
-                <li>Investigar qué pasó</li>
-                <li>Revisar reseñas antiguas</li>
-                <li>Hablar con empleados tensos</li>
-                <li>Intentar adivinar qué mesa fue</li>
+                {t.realityList.map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
               </ul>
 
-              <p className="font-bold text-rose-400 pt-1">Demasiado tarde. El daño ya está hecho.</p>
-              <p className="text-white text-base font-semibold">La reputación de tu marca gastronómica ya recibió un golpe que ahuyentará reservas.</p>
+              <p className="font-bold text-rose-400 pt-1">{t.realityLine9}</p>
+              <p className="text-white text-base font-semibold">{t.realityLine10}</p>
               
               {/* Resolution copy */}
               <div className="mt-8 bg-slate-900 p-5 rounded-2xl border border-slate-850/80 space-y-3.5 text-slate-200">
                 <p className="font-extrabold text-[#facc15] text-base sm:text-lg">
-                  Radar 360 Restaurante existe para cambiar eso estructuralmente de raíz.
+                  {t.realityBoxHeading}
                 </p>
                 <p className="text-xs sm:text-sm leading-relaxed">
-                  Porque si puedes detectar el problema <span className="font-bold text-[#facc15] underline">antes</span> de que llegue a Google, puedes solucionarlo con tu personal de sala antes de que se convierta en una pérdida permanente de ventas.
+                  {t.realityBoxDesc1}
                 </p>
                 <p className="text-xs sm:text-sm leading-relaxed">
-                  Y cuando puedes convertir automáticamente a los clientes felices en excelentes comentarios y reseñas positivas, tu reputación online empieza a acumularse y crecer absolutamente sola sin rogar opiniones.
+                  {t.realityBoxDesc2}
                 </p>
               </div>
 
               <div className="grid grid-cols-3 gap-2.5 text-center text-[10px] sm:text-xs font-black text-white uppercase pt-4 w-full">
-                <div className="bg-[#0f172a] border border-slate-800 p-3 rounded-xl">🚫 No más adivinanzas</div>
-                <div className="bg-[#0f172a] border border-slate-800 p-3 rounded-xl">🚫 No más sorpresas</div>
-                <div className="bg-[#0f172a] border border-slate-800 p-3 rounded-xl">🎯 Solo control absoluto</div>
+                <div className="bg-[#0f172a] border border-slate-800 p-3 rounded-xl">{t.realityBadge1}</div>
+                <div className="bg-[#0f172a] border border-slate-800 p-3 rounded-xl">{t.realityBadge2}</div>
+                <div className="bg-[#0f172a] border border-slate-800 p-3 rounded-xl">{t.realityBadge3}</div>
               </div>
 
             </div>
@@ -491,7 +582,7 @@ export default function App() {
               onClick={() => openCheckout('yearly')}
               className="bg-[#facc15] hover:bg-yellow-400 text-[#0f172a] font-extrabold px-8 py-4 rounded-full shadow-lg shadow-yellow-500/15 transition-all text-xs sm:text-sm uppercase cursor-pointer"
             >
-              PROTEGER LA REPUTACIÓN DE MI MESA HOY
+              {t.realityCta}
             </button>
           </div>
 
@@ -504,10 +595,10 @@ export default function App() {
           
           <div className="space-y-3">
             <span className="bg-yellow-500/10 text-yellow-800 border border-yellow-500/20 text-xs px-3.5 py-1.5 rounded-full font-bold uppercase tracking-widest inline-block">
-              Público Objetivo
+              {t.audienceTagline}
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              ¿Para quién es esto exactamente?
+              {t.audienceHeading}
             </h2>
           </div>
 
@@ -516,25 +607,25 @@ export default function App() {
             
             <div className="bg-white border border-slate-200 p-6 sm:p-8 rounded-3xl shadow-sm space-y-4">
               <div className="text-2xl">🏨</div>
-              <h3 className="font-extrabold text-slate-900 text-base">Negocios Gastronómicos</h3>
+              <h3 className="font-extrabold text-slate-900 text-base">{t.audienceTitle1}</h3>
               <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
-                Restaurantes, cafeterías, bistrós, bares, comedores y hoteles que dependen enteramente de su calificación en estrellas digitales para atraer turismo y nuevos comensales diariamente.
+                {t.audienceDesc1}
               </p>
             </div>
 
             <div className="bg-white border border-slate-200 p-6 sm:p-8 rounded-3xl shadow-sm space-y-4">
               <div className="text-2xl">🧑‍💼</div>
-              <h3 className="font-extrabold text-slate-900 text-base">Dueños de Negocios</h3>
+              <h3 className="font-extrabold text-slate-900 text-base">{t.audienceTitle2}</h3>
               <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
-                Empresarios enfocados que están cansándose de enterarse de los problemas de cocina o servicio cuando ya es demasiado tarde para disculparse con el cliente.
+                {t.audienceDesc2}
               </p>
             </div>
 
             <div className="bg-white border border-slate-200 p-6 sm:p-8 rounded-3xl shadow-sm space-y-4">
               <div className="text-2xl">👔</div>
-              <h3 className="font-extrabold text-slate-900 text-base">Gerentes y Administradores</h3>
+              <h3 className="font-extrabold text-slate-900 text-base">{t.audienceTitle3}</h3>
               <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
-                Gerentes proactivos que quieren controlar de veras la experiencia de cada mesa sin andar persiguendo clientes ni depender de reportes orales incompletos de los meseros.
+                {t.audienceDesc3}
               </p>
             </div>
 
@@ -544,17 +635,15 @@ export default function App() {
           <div className="bg-white text-slate-900 p-6 sm:p-8 lg:p-10 rounded-3xl border border-slate-200 text-left relative overflow-hidden shadow-md mt-8">
             <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-400/5 rounded-full blur-2xl pointer-events-none" />
             <span className="text-[10px] bg-yellow-500/10 text-yellow-850 border border-yellow-500/20 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider block w-max">
-              REFUERZO ESTRATÉGICO
+              {t.audienceQuoteTag}
             </span>
             <blockquote className="mt-4 text-amber-900 font-black text-base sm:text-lg leading-relaxed">
-              "Lo que realmente estás comprando no es un simple sistema QR. Estás comprando visibilidad total sobre lo que ocurre en tu negocio antes de que afecte tus ingresos."
+              {t.audienceQuote}
             </blockquote>
           </div>
 
         </div>
       </section>
-
-
 
       {/* SECTION 6: WHAT TO EXPECT (¿QUÉ PUEDES ESPERAR?) - LIGHT THEMATIC */}
       <section className="py-20 sm:py-28 bg-slate-50 text-slate-900 px-4 border-t border-slate-200/80" id="expectativa">
@@ -562,13 +651,13 @@ export default function App() {
           
           <div className="space-y-3">
             <span className="bg-yellow-500/10 text-yellow-800 border border-yellow-500/20 text-xs px-3.5 py-1.5 rounded-full font-extrabold uppercase tracking-widest inline-block">
-              Garantía y Resultados
+              {t.expectTagline}
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              ¿Qué puedes esperar desde los primeros días?
+              {t.expectHeading}
             </h2>
             <p className="text-sm text-slate-600 max-w-lg mx-auto">
-              Retornos reales medidos de manera directa sobre la reputación online de tu sucursal gastronómica.
+              {t.expectDesc}
             </p>
           </div>
 
@@ -580,10 +669,10 @@ export default function App() {
                 1
               </div>
               <h3 className="font-extrabold text-slate-1000 text-[15px] sm:text-base leading-snug">
-                Más reseñas positivas en Google
+                {t.expectTitle1}
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 leading-normal">
-                Transforma clientes de manera real y satisfecha en promotores activos de tu restaurante sin perseguirlos ni rogarles su opinión al pagar.
+                {t.expectDesc1}
               </p>
             </div>
 
@@ -593,10 +682,10 @@ export default function App() {
                 2
               </div>
               <h3 className="font-extrabold text-slate-1000 text-[15px] sm:text-base leading-snug">
-                Menos reseñas negativas
+                {t.expectTitle2}
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 leading-normal">
-                Detecta la frustración y quejas de tus clientes inmediatamente en el canal privado de forma que actúes antes de que se convierta en una reseña de 1 estrella.
+                {t.expectDesc2}
               </p>
             </div>
 
@@ -606,10 +695,10 @@ export default function App() {
                 3
               </div>
               <h3 className="font-extrabold text-slate-1000 text-[15px] sm:text-base leading-snug">
-                Control total de tu negocio
+                {t.expectTitle3}
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 leading-normal">
-                Sabrás exactamente qué ocurre en tus mesas, cuándo ocurre y qué comidas o meseros presentan mayor número de incidencias o halagos.
+                {t.expectDesc3}
               </p>
             </div>
 
@@ -618,20 +707,20 @@ export default function App() {
         </div>
       </section>
 
-      {/* SECTION 8: PRICING COMPARISON & GRAND SUMMARY TABLE (Alternating Light background) */}
+      {/* SECTION 8: PRICING COMPARISON & GRAND SUMMARY TABLE */}
       <section className="py-20 sm:py-32 bg-slate-50 text-slate-900 px-4 border-t border-slate-200/80" id="precios">
         <div className="max-w-5xl mx-auto space-y-16">
           
           {/* Headline "HAZ CUENTAS..." as provided */}
           <div className="text-center space-y-4 max-w-3xl mx-auto">
             <span className="bg-yellow-500/10 text-yellow-800 border border-yellow-500/20 text-xs px-3.5 py-1.5 rounded-full font-bold uppercase tracking-widest inline-block">
-              Análisis de Tarifas Comparativo
+              {t.pricingTagline}
             </span>
             <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
-              Haz cuentas... ¿Cuánto puedes ahorrar hoy?
+              {t.pricingHeading}
             </h2>
             <p className="text-sm sm:text-base text-slate-650 font-normal">
-              Contratar personal de Mystery Shopper o software de reputación inestable te cuesta miles al año. Mira y compara la diferencia:
+              {t.pricingSubheading}
             </p>
           </div>
 
@@ -641,76 +730,76 @@ export default function App() {
             {/* Alt 1: Consultoria */}
             <div className="border border-slate-200 bg-white rounded-2xl p-6 sm:p-8 flex flex-col justify-between text-left shadow-sm">
               <div>
-                <dt className="text-xs font-black uppercase tracking-wider text-amber-700">ALTERNATIVA TRADICIONAL</dt>
-                <dd className="font-extrabold text-slate-900 text-xl mt-2">Consultorías Físicas</dd>
-                <p className="text-xs text-slate-500 mt-1 font-mono">Costo estimado de mercado</p>
+                <dt className="text-xs font-black uppercase tracking-wider text-amber-700">{t.pricingAlt1Tag}</dt>
+                <dd className="font-extrabold text-slate-900 text-xl mt-2">{t.pricingAlt1Title}</dd>
+                <p className="text-xs text-slate-500 mt-1 font-mono">{t.pricingAlt1CostLabel}</p>
                 
                 <div className="py-4 my-4 border-y border-slate-100 flex items-baseline gap-1">
-                  <span className="text-2xl font-black text-slate-900">$500</span>
-                  <span className="text-base text-slate-400">a</span>
+                  <span className="text-2xl font-black text-slate-900">{t.pricingAlt1Price}</span>
+                  <span className="text-base text-slate-400">{t.pricingAlt1Range}</span>
                   <span className="text-2xl font-black text-slate-900">$3,000</span>
-                  <span className="text-xs text-slate-500 font-medium">/ mes</span>
+                  <span className="text-xs text-slate-500 font-medium">{t.pricingAlt1Unit}</span>
                 </div>
 
                 <ul className="space-y-2 text-xs text-slate-600">
-                  <li>• Reportes manuales tardados</li>
-                  <li>• No actúan en tiempo real</li>
-                  <li>• No evitan la queja en Google</li>
+                  <li>• {t.pricingAlt1Bullet1}</li>
+                  <li>• {t.pricingAlt1Bullet2}</li>
+                  <li>• {t.pricingAlt1Bullet3}</li>
                 </ul>
               </div>
               <p className="text-[10px] text-slate-500 font-medium pt-4 mt-6 border-t border-slate-100">
-                Poco práctico para la operación diaria.
+                {t.pricingAlt1Footer}
               </p>
             </div>
 
             {/* Alt 2: Software convencional */}
             <div className="border border-slate-200 bg-white rounded-2xl p-6 sm:p-8 flex flex-col justify-between text-left shadow-sm">
               <div>
-                <dt className="text-xs font-black uppercase tracking-wider text-amber-700">SOFTWARE TRADICIONAL</dt>
-                <dd className="font-extrabold text-slate-900 text-xl mt-2">Software de Reputación</dd>
-                <p className="text-xs text-slate-500 mt-1 font-mono">Plataformas generales</p>
+                <dt className="text-xs font-black uppercase tracking-wider text-amber-700">{t.pricingAlt2Tag}</dt>
+                <dd className="font-extrabold text-slate-900 text-xl mt-2">{t.pricingAlt2Title}</dd>
+                <p className="text-xs text-slate-500 mt-1 font-mono">{t.pricingAlt2CostLabel}</p>
                 
                 <div className="py-4 my-4 border-y border-slate-100 flex items-baseline gap-1">
-                  <span className="text-2xl font-black text-slate-900">$100</span>
-                  <span className="text-base text-slate-400">a</span>
+                  <span className="text-2xl font-black text-slate-900">{t.pricingAlt2Price}</span>
+                  <span className="text-base text-slate-400">{t.pricingAlt2Range}</span>
                   <span className="text-2xl font-black text-slate-900">$500</span>
-                  <span className="text-xs text-slate-500 font-medium">/ mes</span>
+                  <span className="text-xs text-slate-500 font-medium">{t.pricingAlt2Unit}</span>
                 </div>
 
                 <ul className="space-y-2 text-xs text-slate-600">
-                  <li>• No enfocados a restaurantes</li>
-                  <li>• Sin integración física inteligente</li>
-                  <li>• Complicada configuración inicial</li>
+                  <li>• {t.pricingAlt2Bullet1}</li>
+                  <li>• {t.pricingAlt2Bullet2}</li>
+                  <li>• {t.pricingAlt2Bullet3}</li>
                 </ul>
               </div>
               <p className="text-[10px] text-slate-500 font-medium pt-4 mt-6 border-t border-slate-100">
-                Requiere que el dueño extraiga reportes a mano.
+                {t.pricingAlt2Footer}
               </p>
             </div>
 
-            {/* Alt 3: Our offer (GRAND HIGHLIGHT CARD) -> Pops in dark/gold for high conversion! */}
+            {/* Alt 3: Our offer (GRAND HIGHLIGHT CARD) */}
             <div className="border-4 border-[#facc15] bg-slate-950 text-white rounded-3xl p-6 sm:p-8 flex flex-col justify-between text-left shadow-2xl relative -translate-y-2">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#facc15] text-[#0f172a] text-[10px] sm:text-xs font-black tracking-widest px-4 py-1 rounded-full uppercase">
-                OFERTA IRREPETIBLE ACTIVADA
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#facc15] text-[#0f172a] text-[10px] sm:text-xs font-black tracking-widest px-4 py-1 rounded-full uppercase shrink-0">
+                {t.pricingAlt3Badge}
               </div>
 
               <div>
-                <dt className="text-xs font-black uppercase tracking-wider text-[#facc15]">LA MEJOR OPCIÓN CON LAUNCH PROMO</dt>
-                <dd className="font-black text-white text-2xl sm:text-3xl mt-2">RADAR 360 COMPLETO</dd>
-                <p className="text-xs text-slate-400 mt-1">Con el mejor precio garantizado por un año</p>
+                <dt className="text-xs font-black uppercase tracking-wider text-[#facc15]">{t.pricingAlt3Tag}</dt>
+                <dd className="font-black text-white text-2xl sm:text-3xl mt-2">{t.pricingAlt3Title}</dd>
+                <p className="text-xs text-slate-400 mt-1">{t.pricingAlt3CostLabel}</p>
                 
                 <div className="py-4 my-4 border-y border-slate-900 flex items-baseline gap-1">
-                  <span className="text-xs text-slate-400 line-through mr-1 font-mono">$99 USD</span>
-                  <span className="text-3xl sm:text-4xl font-black text-[#facc15] font-mono">$19,99</span>
-                  <span className="text-xs text-yellow-500/90 font-medium">USD / mes</span>
+                  <span className="text-xs text-slate-400 line-through mr-1 font-mono">{t.pricingAlt3PriceOld}</span>
+                  <span className="text-3xl sm:text-4xl font-black text-[#facc15] font-mono">{t.pricingAlt3Price}</span>
+                  <span className="text-xs text-yellow-500/90 font-medium">{t.pricingAlt3Unit}</span>
                 </div>
 
                 <ul className="space-y-2 text-xs text-slate-350 leading-normal">
-                  <li className="flex items-center gap-1.5"><span className="text-[#facc15]">✓</span> Sistema QR de atención instantánea</li>
-                  <li className="flex items-center gap-1.5"><span className="text-[#facc15]">✓</span> Filtro de reseñas seguro de Google</li>
-                  <li className="flex items-center gap-1.5"><span className="text-[#facc15]">✓</span> Bono Centro de Reputación My Business</li>
-                  <li className="flex items-center gap-1.5"><span className="text-[#facc15]">✓</span> Bono Alertas de Riesgo Inmediatas</li>
-                  <li className="flex items-center gap-1.5 text-yellow-300 font-medium"><span className="text-[#facc15]">✓</span> Bono Carpeta de Videos de Capacitación 24/7</li>
+                  <li className="flex items-center gap-1.5"><span className="text-[#facc15]">✓</span> {t.pricingAlt3Bullet1}</li>
+                  <li className="flex items-center gap-1.5"><span className="text-[#facc15]">✓</span> {t.pricingAlt3Bullet2}</li>
+                  <li className="flex items-center gap-1.5"><span className="text-[#facc15]">✓</span> {t.pricingAlt3Bullet3}</li>
+                  <li className="flex items-center gap-1.5"><span className="text-[#facc15]">✓</span> {t.pricingAlt3Bullet4}</li>
+                  <li className="flex items-center gap-1.5 text-yellow-300 font-medium"><span className="text-[#facc15]">✓</span> {t.pricingAlt3Bullet5}</li>
                 </ul>
               </div>
 
@@ -719,83 +808,83 @@ export default function App() {
                   onClick={() => openCheckout('monthly')}
                   className="w-full bg-slate-900 hover:bg-slate-850 text-[#facc15] border-2 border-[#facc15] font-black text-xs py-3.5 px-4 rounded-full transition-all text-center uppercase tracking-tight cursor-pointer shadow-md"
                 >
-                  Suscripción Mensual ($19,99 USD)
+                  {t.pricingAlt3CtaMonthly}
                 </button>
                 <button
                   onClick={() => openCheckout('yearly')}
                   className="w-full bg-[#facc15] hover:bg-yellow-400 text-[#0f172a] font-black text-xs py-3.5 px-4 rounded-full shadow-lg transition-all text-center uppercase tracking-tight cursor-pointer"
                 >
-                  Suscripción Anual ($199,99 USD)
+                  {t.pricingAlt3CtaYearly}
                 </button>
                 <p className="text-center text-[9px] text-slate-400 mt-2 font-medium">
-                  30 días de garantía • Cancela en un clic
+                  {t.pricingAlt3Footer}
                 </p>
               </div>
             </div>
 
           </div>
 
-          {/* GRAND SUMMARY OF WHAT THEY TAKE (RESUMEN DE LO QUE TE LLEVAS) as requested - light themed */}
+          {/* GRAND SUMMARY OF WHAT THEY TAKE */}
           <div className="bg-white text-slate-900 rounded-3xl p-6 sm:p-8 lg:p-12 border border-slate-200 shadow-xl mt-12 text-left relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-400/5 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-400/5 rounded-full blur-2xl pointer-events-none" />
             
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               <div className="lg:col-span-7 space-y-6">
                 <h3 className="text-xl sm:text-2xl font-black text-amber-800 uppercase tracking-tight">
-                  Resumen de lo que te llevas hoy
+                  {t.summaryHeading}
                 </h3>
                 
                 <div className="space-y-3.5 text-xs sm:text-sm text-slate-700">
                   <div className="flex items-start gap-2.5">
                     <span className="text-amber-600 font-extrabold shrink-0 mt-0.5">✔</span>
                     <div>
-                      <p className="font-extrabold text-slate-900">Radar 360 Restaurante (Membresía Completa)</p>
-                      <p className="text-slate-500 text-xs">Atención instantánea mediante código QR de vanguardia en mesa.</p>
+                      <p className="font-extrabold text-slate-900">{t.summaryCheck1Title}</p>
+                      <p className="text-slate-500 text-xs">{t.summaryCheck1Desc}</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-2.5">
                     <span className="text-amber-600 font-extrabold shrink-0 mt-0.5">✔</span>
                     <div>
-                      <p className="font-extrabold text-slate-900">Llamador de Mesero, Cuenta y Asistencia Física</p>
-                      <p className="text-slate-500 text-xs">Tus clientes piden auxilio o ticket sin andarse levantando.</p>
+                      <p className="font-extrabold text-slate-900">{t.summaryCheck2Title}</p>
+                      <p className="text-slate-500 text-xs">{t.summaryCheck2Desc}</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-2.5">
                     <span className="text-amber-600 font-extrabold shrink-0 mt-0.5">✔</span>
                     <div>
-                      <p className="font-extrabold text-slate-900">Captura y Filtro de Satisfacción en Tiempo Real</p>
-                      <p className="text-slate-500 text-xs">Conversión automática instantánea de clientes felices directamente en reseñas de Google.</p>
+                      <p className="font-extrabold text-slate-900">{t.summaryCheck3Title}</p>
+                      <p className="text-slate-500 text-xs">{t.summaryCheck3Desc}</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-2.5">
                     <span className="text-amber-600 font-extrabold shrink-0 mt-0.5">🎁</span>
                     <div>
-                      <p className="font-extrabold text-slate-900">Bono: Carpeta de Capacitación Compartida</p>
-                      <p className="text-slate-500 text-xs">Acceso directo a videos instructivos exclusivos: configuración inicial para comenzar, cómo cancelar suscripción de forma rápida y resolución de dudas comunes para capacitar a tu personal.</p>
+                      <p className="font-extrabold text-slate-900">{t.summaryCheck4Title}</p>
+                      <p className="text-slate-500 text-xs">{t.summaryCheck4Desc}</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Conversion Box with direct buttons (Keep Dark/Sleek for high emphasis) */}
+              {/* Conversion Box with direct buttons */}
               <div className="lg:col-span-5 bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center space-y-4">
                 <p className="text-xs sm:text-sm text-slate-300">
-                  Garantiza este precio de lanzamiento y blinda la recomendación de tu sucursal gastronómica.
+                  {t.summaryBoxText}
                 </p>
                 <div className="space-y-1">
-                  <p className="text-[11px] text-slate-400 uppercase tracking-widest block font-bold">Selecciona tu Plan</p>
-                  <p className="text-[10px] text-yellow-500 font-medium">Paga de forma 100% segura mediante Hotmart</p>
+                  <p className="text-[11px] text-slate-400 uppercase tracking-widest block font-bold">{t.summaryBoxTitle}</p>
+                  <p className="text-[10px] text-yellow-500 font-medium">{t.summaryBoxSub}</p>
                 </div>
 
                 <div className="space-y-3 pt-2">
                   <button
                     onClick={() => openCheckout('monthly')}
-                    className="w-full bg-slate-950 hover:bg-slate-900 text-[#facc15] border border-slate-800 font-extrabold py-3.5 rounded-full text-xs shadow-md transition-all uppercase tracking-tight cursor-pointer active:scale-95 flex items-center justify-center gap-1.5"
+                    className="w-full bg-slate-950 hover:bg-slate-900 text-[#facc15] border border-slate-880 font-extrabold py-3.5 rounded-full text-xs shadow-md transition-all uppercase tracking-tight cursor-pointer active:scale-95 flex items-center justify-center gap-1.5"
                   >
-                    <span>Plan Mensual ($19,99 USD)</span>
+                    <span>{t.summaryBoxMonthly}</span>
                     <ArrowRight className="w-3.5 h-3.5 shrink-0 text-[#facc15]" />
                   </button>
 
@@ -803,13 +892,13 @@ export default function App() {
                     onClick={() => openCheckout('yearly')}
                     className="w-full bg-[#facc15] hover:bg-yellow-400 text-[#0f172a] font-extrabold py-4 rounded-full text-xs sm:text-sm shadow-xl transition-all uppercase tracking-tight cursor-pointer active:scale-95 flex items-center justify-center gap-1.5"
                   >
-                    <span>Plan Anual ($199,99 USD)</span>
+                    <span>{t.summaryBoxYearly}</span>
                     <ArrowRight className="w-4 h-4 shrink-0 font-extrabold text-slate-900" />
                   </button>
                 </div>
 
                 <p className="text-[9.5px] text-slate-400">
-                  * Sin contratos de permanencia obligatorios. Setup asistido llave en mano.
+                  {t.summaryBoxFooter}
                 </p>
               </div>
             </div>
@@ -820,39 +909,38 @@ export default function App() {
       </section>
 
       {/* SECTION 9: QUESTIONS & ANSWERS (Deep dark background: FAQ) */}
-      <FaqSection />
+      <FaqSection lang={lang} />
 
-      {/* SECTION 10: CLOSING ARGUMENT & AHORA O NUNCA (Alternating Light background) */}
+      {/* SECTION 10: CLOSING ARGUMENT */}
       <section className="py-20 sm:py-32 bg-slate-50 border-t border-slate-200 text-slate-900 text-center px-4 relative overflow-hidden" id="cierre">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-yellow-500/5 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-3xl mx-auto space-y-8 relative z-10">
           
           <span className="bg-yellow-500/10 text-yellow-850 border border-yellow-500/20 text-xs px-3.5 py-1.5 rounded-full font-bold uppercase tracking-widest inline-block">
-            ÚLTIMA OPORTUNIDAD
+            {t.closingTagline}
           </span>
 
-          {/* Closing statements as supplied in copy */}
           <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
-            No se trata de comprar otro software para tu negocio gastronomico... Se trata de decidir si vas a seguir descubriendo los problemas cuando ya están publicados de forma pública en Google.
+            {t.closingHeading}
           </h2>
 
           <p className="text-base sm:text-xl text-slate-650 font-normal max-w-2xl mx-auto">
-            O si vas a detectarlos <span className="font-bold text-amber-700 underline decoration-amber-500/30">antes</span>.
+            {t.closingSubheading}
           </p>
 
           <div className="max-w-xl mx-auto rounded-2xl bg-white border border-slate-200 p-5 space-y-3.5 text-xs sm:text-sm text-slate-700 leading-relaxed text-left shadow-sm">
             <p>
-              Cada cliente insatisfecho que no logras identificar en mesa es una <span className="font-semibold text-rose-600 underline">reseña negativa</span> esperando suceder frente a tus ingresos del mes que viene.
+              {t.closingCardLine1}
             </p>
             <p>
-              Y cada cliente feliz que no aprovechas es una valiosa <span className="font-semibold text-amber-700 underline">recomendación perdida</span> que pudo haber traído a diez nuevos grupos. Es hora de blindar tu labor en cocina.
+              {t.closingCardLine2}
             </p>
           </div>
 
           <div className="pt-4 space-y-4">
             <span className="block text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-700 to-amber-900 tracking-widest uppercase">
-              AHORA O NUNCA
+              {t.closingBtnLabel}
             </span>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
@@ -860,19 +948,19 @@ export default function App() {
                 onClick={() => openCheckout('monthly')}
                 className="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-[#facc15] border-2 border-[#facc15] font-black text-xs px-8 py-4.5 rounded-full shadow-lg transition-all uppercase tracking-tight cursor-pointer"
               >
-                Plan Mensual ($19,99 USD)
+                {t.closingBtnMonthly}
               </button>
               <button
                 onClick={() => openCheckout('yearly')}
                 className="w-full sm:w-auto bg-[#facc15] hover:bg-yellow-400 text-[#0f172a] font-extrabold px-10 py-5 rounded-full shadow-2xl hover:scale-[1.02] active:scale-95 transition-all text-sm uppercase cursor-pointer"
               >
-                Plan Anual ($199,99 USD)
+                {t.closingBtnYearly}
               </button>
             </div>
           </div>
 
           <p className="text-xs text-slate-500">
-            Únete a cientos de marcas gastronómicas inteligentes. Paga en pesos o dólares de forma segura con precio congelado por 1 año.
+            {t.closingFooter}
           </p>
 
         </div>
@@ -882,23 +970,22 @@ export default function App() {
       <footer className="bg-slate-950 text-slate-500 text-xs py-10 px-4 border-t border-slate-900 text-center">
         <div className="max-w-6xl mx-auto space-y-4">
           <p className="font-bold text-[11px] text-slate-400 uppercase tracking-widest">
-            RADAR 360 NEGOCIOS GASTRONÓMICOS © 2026
+            {t.footerText}
           </p>
           <p className="max-w-md mx-auto text-[10px] text-slate-600 leading-relaxed">
             Diseñamos soluciones tecnológicas con enfoque garantizado de conversión directa para restaurantes, cafeterías, bares e imperios gastronómicos. El uso de marcas de terceros (como Google My Business o WhatsApp) es con fines informativos de compatibilidad técnica.
           </p>
           <div className="flex items-center justify-center gap-4 text-[10px] text-[#facc15] font-semibold pt-2">
-            <a href="#hero" className="hover:underline">Inicio</a>
+            <a href="#hero" className="hover:underline">{t.footerMenuHome}</a>
             <span>•</span>
-            <a href="#beneficios" className="hover:underline">Beneficios</a>
+            <a href="#beneficios" className="hover:underline">{t.footerMenuBenefits}</a>
             <span>•</span>
-
-            <a href="#cierre" className="hover:underline">Soporte</a>
+            <a href="#cierre" className="hover:underline">{t.footerMenuSupport}</a>
           </div>
         </div>
       </footer>
 
-      {/* LEADS DEMO VIEW COLLAPSIBLE DRAWER (Highly practical for review and validation in AI Studio) */}
+      {/* LEADS DEMO VIEW COLLAPSIBLE DRAWER */}
       <div className="fixed bottom-4 right-4 z-40 font-sans">
         <div className={`bg-slate-900 border border-slate-800 rounded-2xl shadow-3xl overflow-hidden transition-all duration-350 text-left ${
           showAdminPanel ? 'w-80 h-96' : 'w-12 h-12 rounded-full'
@@ -907,13 +994,13 @@ export default function App() {
             <div className="h-full flex flex-col justify-between p-4">
               <div className="flex items-center justify-between border-b border-slate-800 pb-2">
                 <span className="text-[11px] font-black text-[#facc15] uppercase tracking-widest flex items-center gap-1.5">
-                  🛡️ PANEL DEMO: LEADS ({localLeads.length})
+                  {t.demoPanelTitle} ({localLeads.length})
                 </span>
                 <button 
                   onClick={() => setShowAdminPanel(false)}
                   className="text-slate-400 hover:text-white text-xs font-bold bg-slate-950 px-2 py-1 rounded cursor-pointer"
                 >
-                  Cerrar
+                  {t.demoPanelClose}
                 </button>
               </div>
 
@@ -934,8 +1021,8 @@ export default function App() {
                   ))
                 ) : (
                   <div className="h-full flex flex-col items-center justify-center text-slate-550 text-center text-[11px] leading-relaxed py-10">
-                    <p>No hay registros de leads localmente todavía.</p>
-                    <p className="text-slate-600 mt-1">Somete datos en cualquier botón de CTA de la página para simular la captura.</p>
+                    <p>{t.demoPanelNoLeads}</p>
+                    <p className="text-slate-600 mt-1">{t.demoPanelHelper}</p>
                   </div>
                 )}
               </div>
@@ -946,7 +1033,7 @@ export default function App() {
                   onClick={clearLeads}
                   className="w-full bg-rose-600/15 hover:bg-rose-600 hover:text-white border border-rose-500/20 text-rose-300 text-[10px] py-1.5 rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1 leading-none uppercase font-extrabold"
                 >
-                  <Trash2 className="w-3.5 h-3.5" /> Limpiar Leads Guardados
+                  <Trash2 className="w-3.5 h-3.5" /> {t.demoPanelClear}
                 </button>
               )}
             </div>
@@ -954,7 +1041,7 @@ export default function App() {
             <button
               onClick={() => setShowAdminPanel(true)}
               className="w-full h-full bg-slate-900 border border-slate-800 text-slate-300 hover:text-[#facc15] hover:border-yellow-500/35 rounded-full flex items-center justify-center transition-colors cursor-pointer relative"
-              title="Ver Leads de prueba guardados"
+              title="Ver Leads de prueba"
             >
               <Users className="w-5 h-5" />
               {localLeads.length > 0 && (
@@ -976,6 +1063,7 @@ export default function App() {
         onClose={() => setIsModalOpen(false)} 
         defaultPlan={modalDefaultPlan} 
         onEnterDashboard={() => setShowOwnerDashboard(true)}
+        lang={lang}
       />
 
       {/* LOGIN OVERLAY MODAL */}
@@ -987,6 +1075,7 @@ export default function App() {
           setDemoBusinessName(businessName);
           setShowOwnerDashboard(true);
         }}
+        lang={lang}
       />
 
     </div>

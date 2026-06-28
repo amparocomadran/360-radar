@@ -15,12 +15,13 @@ import {
 interface DinerScreenProps {
   tableNumber: string;
   businessName: string;
+  lang?: 'es' | 'en';
 }
 
-export default function DinerScreen({ tableNumber, businessName }: DinerScreenProps) {
+export default function DinerScreen({ tableNumber, businessName, lang = 'es' }: DinerScreenProps) {
   const [rating, setRating] = useState<number | null>(null);
   const [hoverRating, setHoverRating] = useState<number | null>(null);
-  const [complaintCategory, setComplaintCategory] = useState<string>('Demora en plato');
+  const [complaintCategory, setComplaintCategory] = useState<string>(lang === 'en' ? 'Delayed dish' : 'Demora en plato');
   const [comment, setComment] = useState<string>('');
   const [clientName, setClientName] = useState<string>('');
   const [clientPhone, setClientPhone] = useState<string>('');
@@ -97,10 +98,10 @@ export default function DinerScreen({ tableNumber, businessName }: DinerScreenPr
       // Register high rating scan
       const newScan = {
         id: `s-live-${Date.now()}`,
-        timestamp: 'Ahora mismo (Móvil)',
+        timestamp: lang === 'en' ? 'Just now (Mobile)' : 'Ahora mismo (Móvil)',
         tableNumber: tableNum,
         rating: selected,
-        clientFeedback: 'Excelente atención de mesa en vivo.',
+        clientFeedback: lang === 'en' ? 'Excellent tableside experience.' : 'Excelente atención de mesa en vivo.',
         actionTaken: 'REDIRECT_GOOGLE'
       };
       pushDashboardLog(newScan);
@@ -118,43 +119,61 @@ export default function DinerScreen({ tableNumber, businessName }: DinerScreenPr
     e.preventDefault();
     setStep('thanks');
 
-    const feedbackText = comment.trim() || `Problema: ${complaintCategory}`;
+    const feedbackText = comment.trim() || `${lang === 'en' ? 'Issue' : 'Problema'}: ${complaintCategory}`;
 
     // Register complaint scan
     const newScan = {
       id: `s-live-${Date.now()}`,
-      timestamp: 'Ahora mismo (Móvil)',
+      timestamp: lang === 'en' ? 'Just now (Mobile)' : 'Ahora mismo (Móvil)',
       tableNumber: tableNum,
       rating: rating || 2,
       clientFeedback: feedbackText,
       actionTaken: 'WHATS_ALERT_SENT',
-      clientPhone: clientPhone || '+54 261 456-7890'
+      clientPhone: clientPhone || '+1 555-0199'
     };
     pushDashboardLog(newScan);
   };
 
   const triggerInstantAction = (type: 'mozo' | 'cuenta') => {
     const isMozo = type === 'mozo';
-    setStatusMessage(isMozo ? '🛎️ Solicitando mozo...' : '💵 Solicitando la cuenta...');
+    
+    if (lang === 'en') {
+      setStatusMessage(isMozo ? '🛎️ Requesting server...' : '💵 Requesting the bill...');
+    } else {
+      setStatusMessage(isMozo ? '🛎️ Solicitando mozo...' : '💵 Solicitando la cuenta...');
+    }
 
-    // Push action log (acts as special 0-rating scan or note)
+    // Push action log (acts as special 5-rating scan or note)
     const newScan = {
       id: `s-action-${Date.now()}`,
-      timestamp: 'Ahora mismo (Móvil)',
+      timestamp: lang === 'en' ? 'Just now (Mobile)' : 'Ahora mismo (Móvil)',
       tableNumber: tableNum,
-      rating: isMozo ? 5 : 5, // Neutral rating but triggers action
+      rating: 5,
       clientFeedback: isMozo 
-        ? '🛎️ ¡El cliente presionó el botón de asistencia en mesa para llamar al mozo!' 
-        : '💵 ¡El cliente solicitó la cuenta física de la mesa!',
+        ? (lang === 'en' 
+            ? '🛎️ Diner pressed tableside call button to request a waiter!' 
+            : '🛎️ ¡El cliente presionó el botón de asistencia en mesa para llamar al mozo!')
+        : (lang === 'en'
+            ? '💵 Diner requested the table check/bill!'
+            : '💵 ¡El cliente solicitó la cuenta física de la mesa!'),
       actionTaken: 'INTERNAL_FEEDBACK'
     };
     pushDashboardLog(newScan);
 
     setTimeout(() => {
-      setStatusMessage(isMozo ? '✓ Mozo notificado de inmediato' : '✓ Cuenta solicitada con éxito');
+      if (lang === 'en') {
+        setStatusMessage(isMozo ? '✓ Server notified immediately' : '✓ Bill requested successfully');
+      } else {
+        setStatusMessage(isMozo ? '✓ Mozo notificado de inmediato' : '✓ Cuenta solicitada con éxito');
+      }
       setTimeout(() => setStatusMessage(''), 3000);
     }, 1000);
   };
+
+  // Complaint categories mapped
+  const esCategories = ['Comida fría', 'Demora en plato', 'Mesa desordenada', 'Mala atención', 'Otro'];
+  const enCategories = ['Cold food', 'Delayed dish', 'Untidy table', 'Poor service', 'Other'];
+  const categories = lang === 'en' ? enCategories : esCategories;
 
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-start p-4 text-slate-100 font-sans">
@@ -167,13 +186,15 @@ export default function DinerScreen({ tableNumber, businessName }: DinerScreenPr
 
         <div className="text-center space-y-1 relative z-10">
           <div className="inline-flex items-center gap-1.5 bg-[#facc15]/10 border border-[#facc15]/20 text-[#facc15] text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full">
-            <span>🔴 Mesa {tableNum}</span>
+            <span>🔴 {lang === 'en' ? `Table ${tableNum}` : `Mesa ${tableNum}`}</span>
           </div>
           <h2 className="text-xl font-black text-white uppercase tracking-tight mt-1">
             {businessName}
           </h2>
           <p className="text-xs text-slate-400">
-            ¿Cómo calificarías tu experiencia en este momento?
+            {lang === 'en' 
+              ? 'How would you rate your experience right now?' 
+              : '¿Cómo calificarías tu experiencia en este momento?'}
           </p>
         </div>
 
@@ -205,13 +226,17 @@ export default function DinerScreen({ tableNumber, businessName }: DinerScreenPr
               </div>
               
               <p className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">
-                Tu valoración ayuda a mejorar nuestro servicio gastronómico
+                {lang === 'en' 
+                  ? 'Your rating helps improve our culinary service' 
+                  : 'Tu valoración ayuda a mejorar nuestro servicio gastronómico'}
               </p>
 
               {/* Divider */}
               <div className="relative flex py-1 items-center">
                 <div className="flex-grow border-t border-slate-850"></div>
-                <span className="flex-shrink mx-3 text-[9px] text-slate-500 font-bold uppercase tracking-widest">¿Necesitas algo más?</span>
+                <span className="flex-shrink mx-3 text-[9px] text-slate-500 font-bold uppercase tracking-widest">
+                  {lang === 'en' ? 'Need anything else?' : '¿Necesitas algo más?'}
+                </span>
                 <div className="flex-grow border-t border-slate-850"></div>
               </div>
 
@@ -220,19 +245,19 @@ export default function DinerScreen({ tableNumber, businessName }: DinerScreenPr
                 <button
                   type="button"
                   onClick={() => triggerInstantAction('mozo')}
-                  className="bg-slate-900 hover:bg-slate-850 text-slate-300 font-bold text-xs py-4 px-3 rounded-xl border border-slate-800 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 hover:border-yellow-500/20"
+                  className="bg-slate-900 hover:bg-slate-850 text-slate-300 font-bold text-xs py-4 px-3 rounded-xl border border-slate-800 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 hover:border-yellow-500/20 animate-none"
                 >
                   <span className="text-2xl">🛎️</span>
-                  <span className="uppercase tracking-wider text-[10px]">Llamar al Mozo</span>
+                  <span className="uppercase tracking-wider text-[10px]">{lang === 'en' ? 'Call Server' : 'Llamar al Mozo'}</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => triggerInstantAction('cuenta')}
-                  className="bg-slate-900 hover:bg-slate-850 text-slate-300 font-bold text-xs py-4 px-3 rounded-xl border border-slate-800 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 hover:border-yellow-500/20"
+                  className="bg-slate-900 hover:bg-slate-850 text-slate-300 font-bold text-xs py-4 px-3 rounded-xl border border-slate-800 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 hover:border-yellow-500/20 animate-none"
                 >
                   <span className="text-2xl">💵</span>
-                  <span className="uppercase tracking-wider text-[10px]">Pedir Cuenta</span>
+                  <span className="uppercase tracking-wider text-[10px]">{lang === 'en' ? 'Request Bill' : 'Pedir Cuenta'}</span>
                 </button>
               </div>
 
@@ -251,17 +276,20 @@ export default function DinerScreen({ tableNumber, businessName }: DinerScreenPr
               <div className="bg-amber-500/10 border border-amber-500/20 p-3.5 rounded-xl flex items-start gap-2.5 text-left">
                 <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
                 <p className="text-[11px] text-amber-300 leading-normal font-medium">
-                  <strong>Canal Directo Privado:</strong> Tu reclamo será enviado de inmediato al encargado de turno vía WhatsApp para resolverlo ahora.
+                  <strong>{lang === 'en' ? 'Private Direct Channel:' : 'Canal Directo Privado:'}</strong>{' '}
+                  {lang === 'en' 
+                    ? 'Your alert will be sent immediately to the manager on duty via WhatsApp to resolve it right now.' 
+                    : 'Tu reclamo será enviado de inmediato al encargado de turno vía WhatsApp para resolverlo ahora.'}
                 </p>
               </div>
 
               {/* Tag Selector */}
-              <div className="space-y-1.5">
+              <div className="space-y-1.5 text-left">
                 <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                  ¿Cuál es el inconveniente?
+                  {lang === 'en' ? 'What is the issue?' : '¿Cuál es el inconveniente?'}
                 </label>
                 <div className="flex flex-wrap gap-1.5">
-                  {['Comida fría', 'Demora en plato', 'Mesa desordenada', 'Mala atención', 'Otro'].map((cat) => (
+                  {categories.map((cat) => (
                     <button
                       key={cat}
                       type="button"
@@ -281,42 +309,42 @@ export default function DinerScreen({ tableNumber, businessName }: DinerScreenPr
                 </div>
               </div>
 
-              <form onSubmit={handleComplaintSubmit} className="space-y-3 pt-1">
+              <form onSubmit={handleComplaintSubmit} className="space-y-3 pt-1 text-left">
                 <div className="space-y-1">
                   <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                    Mensaje de Alerta
+                    {lang === 'en' ? 'Alert Message' : 'Mensaje de Alerta'}
                   </label>
                   <textarea
                     rows={3}
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
-                    placeholder="Escribe aquí tu observación para resolverla..."
-                    className="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-amber-500/40"
+                    placeholder={lang === 'en' ? 'Describe your issue here so we can resolve it...' : 'Escribe aquí tu observación para resolverla...'}
+                    className="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white placeholder-slate-650 focus:outline-none focus:border-amber-500/40"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-1">
                     <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                      Nombre (Opcional)
+                      {lang === 'en' ? 'Name (Optional)' : 'Nombre (Opcional)'}
                     </label>
                     <input
                       type="text"
                       value={clientName}
                       onChange={(e) => setClientName(e.target.value)}
-                      placeholder="Tu nombre"
+                      placeholder={lang === 'en' ? 'Your name' : 'Tu nombre'}
                       className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-650 focus:outline-none"
                     />
                   </div>
                   <div className="space-y-1">
                     <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                      WhatsApp (Opcional)
+                      {lang === 'en' ? 'WhatsApp (Optional)' : 'WhatsApp (Opcional)'}
                     </label>
                     <input
                       type="text"
                       value={clientPhone}
                       onChange={(e) => setClientPhone(e.target.value)}
-                      placeholder="+54 261..."
+                      placeholder={lang === 'en' ? '+1 (555) 0100' : '+54 261...'}
                       className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-650 focus:outline-none"
                     />
                   </div>
@@ -328,14 +356,14 @@ export default function DinerScreen({ tableNumber, businessName }: DinerScreenPr
                     onClick={() => setStep('rating')}
                     className="flex-1 bg-slate-900 hover:bg-slate-850 text-slate-400 font-bold text-[10px] py-3 rounded-xl border border-slate-800 cursor-pointer uppercase tracking-wider"
                   >
-                    Atrás
+                    {lang === 'en' ? 'Back' : 'Atrás'}
                   </button>
                   <button
                     type="submit"
                     className="flex-1 bg-amber-500 hover:bg-amber-450 text-slate-950 font-black text-[10px] py-3 rounded-xl flex items-center justify-center gap-1.5 cursor-pointer uppercase tracking-wider"
                   >
                     <Send className="w-3.5 h-3.5" />
-                    Enviar Alerta
+                    {lang === 'en' ? 'Send Alert' : 'Enviar Alerta'}
                   </button>
                 </div>
               </form>
@@ -349,9 +377,13 @@ export default function DinerScreen({ tableNumber, businessName }: DinerScreenPr
               </div>
               
               <div className="space-y-1.5">
-                <h3 className="text-sm font-black text-white">¡Muchas gracias por valorarnos!</h3>
+                <h3 className="text-sm font-black text-white">
+                  {lang === 'en' ? 'Thank you for rating us!' : '¡Muchas gracias por valorarnos!'}
+                </h3>
                 <p className="text-[11px] text-slate-400 leading-relaxed px-2">
-                  Como nos calificaste con <span className="text-yellow-400 font-bold">{rating} estrellas</span>, te redirigimos automáticamente a nuestro perfil de Google Maps para que nos compartas tu opinión de forma pública.
+                  {lang === 'en' 
+                    ? <>Since you rated us <span className="text-yellow-400 font-bold">{rating} stars</span>, we are automatically redirecting you to our Google Maps profile to share your public review.</>
+                    : <>Como nos calificaste con <span className="text-yellow-400 font-bold">{rating} estrellas</span>, te redirigimos automáticamente a nuestro perfil de Google Maps para que nos compartas tu opinión de forma pública.</>}
                 </p>
               </div>
 
@@ -367,12 +399,14 @@ export default function DinerScreen({ tableNumber, businessName }: DinerScreenPr
                     <Star key={s} className="w-4 h-4 fill-current" />
                   ))}
                 </div>
-                <p className="text-[9px] text-slate-500 font-medium">Estás compartiendo tu valoración públicamente.</p>
+                <p className="text-[9px] text-slate-500 font-medium">
+                  {lang === 'en' ? 'You are sharing your rating publicly.' : 'Estás compartiendo tu valoración públicamente.'}
+                </p>
               </div>
 
               <div className="text-[10px] text-slate-500 flex items-center justify-center gap-1.5 font-mono pt-1">
                 <span className="w-2.5 h-2.5 border-2 border-[#facc15] border-t-transparent rounded-full animate-spin"></span>
-                <span>Abriendo Google Maps real en segundos...</span>
+                <span>{lang === 'en' ? 'Opening live Google Maps in seconds...' : 'Abriendo Google Maps real en segundos...'}</span>
               </div>
             </div>
           )}
@@ -384,9 +418,13 @@ export default function DinerScreen({ tableNumber, businessName }: DinerScreenPr
               </div>
 
               <div className="space-y-1.5">
-                <h3 className="text-sm font-black text-white uppercase tracking-wider">¡Opinión Procesada!</h3>
+                <h3 className="text-sm font-black text-white uppercase tracking-wider">
+                  {lang === 'en' ? 'Feedback Processed!' : '¡Opinión Procesada!'}
+                </h3>
                 <p className="text-[11px] text-slate-400 leading-relaxed px-4">
-                  Tu valoración ha sido recibida de forma segura. ¡Agradecemos tu tiempo para ayudarnos a mejorar cada día!
+                  {lang === 'en' 
+                    ? 'Your rating has been received securely. We appreciate your time to help us improve every single day!'
+                    : 'Tu valoración ha sido recibida de forma segura. ¡Agradecemos tu tiempo para ayudarnos a mejorar cada día!'}
                 </p>
               </div>
 
@@ -399,7 +437,7 @@ export default function DinerScreen({ tableNumber, businessName }: DinerScreenPr
                 }}
                 className="bg-slate-900 hover:bg-slate-850 text-slate-300 border border-slate-800 text-[10px] font-black uppercase tracking-wider py-2.5 px-4 rounded-xl cursor-pointer"
               >
-                Simular otro comensal
+                {lang === 'en' ? 'Simulate another diner' : 'Simular otro comensal'}
               </button>
             </div>
           )}
@@ -409,7 +447,7 @@ export default function DinerScreen({ tableNumber, businessName }: DinerScreenPr
         {/* Footer branding */}
         <div className="text-center border-t border-slate-850/80 pt-4 pb-1">
           <p className="text-[9px] text-slate-600 font-mono tracking-widest uppercase">
-            BLINDAJE REPUTACIONAL POR RADAR 360
+            {lang === 'en' ? 'REPUTATION SHIELD BY RADAR 360' : 'BLINDAJE REPUTACIONAL POR RADAR 360'}
           </p>
         </div>
 
