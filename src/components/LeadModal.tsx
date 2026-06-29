@@ -39,42 +39,53 @@ export default function LeadModal({ isOpen, onClose, defaultPlan, onEnterDashboa
     }
   }, [isOpen, defaultPlan]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
+    const newLead: Lead = {
+      id: Math.random().toString(36).substring(2, 9),
+      businessName,
+      ownerName,
+      email,
+      phone,
+      plan,
+      timestamp: new Date().toLocaleString('es-ES', { timeZone: 'America/New_York' }),
+      status: 'PENDING_CONTACT'
+    };
+
+    // Store in localStorage for demo review
+    const existing = localStorage.getItem('radar_leads');
+    const leads = existing ? JSON.parse(existing) : [];
+    leads.unshift(newLead);
+    localStorage.setItem('radar_leads', JSON.stringify(leads));
+
+    // Trigger standard event to refresh lead counts if any other component is watching
+    window.dispatchEvent(new Event('radar_lead_added'));
+
+    // Send lead details to server to trigger the Resend email notification
+    try {
+      await fetch('/api/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          businessName,
+          ownerName,
+          email,
+          phone,
+          plan
+        }),
+      });
+    } catch (err) {
+      console.error('Error submitting lead to server for Resend notification:', err);
+    }
+
     setTimeout(() => {
-      const newLead: Lead = {
-        id: Math.random().toString(36).substring(2, 9),
-        businessName,
-        ownerName,
-        email,
-        phone,
-        plan,
-        timestamp: new Date().toLocaleString('es-ES', { timeZone: 'America/New_York' }),
-        status: 'PENDING_CONTACT'
-      };
-
-      // Store in localStorage for demo review
-      const existing = localStorage.getItem('radar_leads');
-      const leads = existing ? JSON.parse(existing) : [];
-      leads.unshift(newLead);
-      localStorage.setItem('radar_leads', JSON.stringify(leads));
-
-      // Trigger standard event to refresh lead counts if any other component is watching
-      window.dispatchEvent(new Event('radar_lead_added'));
-
       setLoading(false);
       setIsSubmitted(true);
-
-      // Programmatic redirect based on plan choice (Hotmart URLs requested)
-      const redirectUrl = plan === 'monthly' 
-        ? "https://pay.hotmart.com/S106453876T?sck=HOTMART_PRODUCT_PAGE&off=tkqqz1lm&hotfeature=32" 
-        : "https://pay.hotmart.com/X106454109S?sck=HOTMART_PRODUCT_PAGE&off=9p39kiwk&hotfeature=32";
-      setTimeout(() => {
-        window.location.href = redirectUrl;
-      }, 1500);
-    }, 1200);
+    }, 1000);
   };
 
   const planPriceDisplay = plan === 'monthly' 
@@ -309,6 +320,30 @@ export default function LeadModal({ isOpen, onClose, defaultPlan, onEnterDashboa
                 <div className="flex items-center gap-2.5 bg-slate-850 p-3 rounded-xl border border-slate-800 text-[11px] text-slate-400 text-left leading-snug">
                   <Clock className="w-4 h-4 text-[#facc15] shrink-0" />
                   <span>{lang === 'en' ? 'A dedicated technical manager will review your maps and menus in less than 12 business hours.' : 'Un consultor asignado validará tus menús e integrará tu ficha de Google Maps en un máximo de 12 horas hábiles.'}</span>
+                </div>
+
+                {/* IMPORTANT ACCOUNT ACTIVATION ANNOUNCEMENT */}
+                <div className="bg-amber-500/10 border-2 border-amber-500/30 p-4.5 rounded-2xl text-left space-y-2.5 relative overflow-hidden">
+                  <div className="flex items-center gap-2 text-[#facc15] font-black text-xs uppercase tracking-wider">
+                    <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse inline-block"></span>
+                    📢 {lang === 'en' ? 'CRITICAL REQUIREMENT' : 'PASO CRUCIAL PARA LA ACTIVACIÓN'}
+                  </div>
+                  <p className="text-xs text-slate-100 font-bold leading-normal">
+                    {lang === 'en' 
+                      ? 'Once you complete your subscription on Hotmart, please send an email to'
+                      : 'Una vez realizada la suscripción en Hotmart, es imprescindible que envíes un correo a:'}{' '}
+                    <a href="mailto:radar360negociosgastronomicos@gmail.com" className="text-[#facc15] underline font-mono select-all">
+                      radar360negociosgastronomicos@gmail.com
+                    </a>{' '}
+                    {lang === 'en' 
+                      ? 'indicating the name of your restaurant so we can activate your account and give you access to the training videos immediately.'
+                      : 'con el nombre de tu restaurante para dar de alta tu cuenta inmediatamente y darte acceso exclusivo a los videos con las capacitaciones.'}
+                  </p>
+                  <p className="text-[10px] text-slate-400 leading-snug pt-1.5 border-t border-slate-800/80">
+                    {lang === 'en'
+                      ? '🔒 Remember: Our support team is here for you 24/7 via email and WhatsApp/mobile (+54 9 261 360-1613) to guide you through this process.'
+                      : '📞 Recuerda: Nuestro centro de soporte técnico y atención al comensal se encuentra disponible las 24 horas, los 7 días de la semana vía email (radar360negociosgastronomicos@gmail.com) y celular/WhatsApp (+54 9 261 360-1613) para guiarte en todo momento.'}
+                  </p>
                 </div>
 
                 <div className="pt-2 space-y-2">

@@ -110,6 +110,102 @@ async function startServer() {
     res.json(data);
   });
 
+  // API Route: Register new lead and send email via Resend
+  app.post("/api/leads", async (req, res) => {
+    const { businessName, ownerName, email, phone, plan } = req.body;
+    
+    console.log("Nuevo lead recibido:", { businessName, ownerName, email, phone, plan });
+
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      console.warn("⚠️ RESEND_API_KEY no está configurada en las variables de entorno. Omitiendo envío de email.");
+      return res.json({ 
+        success: true, 
+        message: "Lead registrado localmente en el servidor. Configure RESEND_API_KEY para habilitar notificaciones por email." 
+      });
+    }
+
+    try {
+      const emailHtml = `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 25px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+          <div style="border-bottom: 2px solid #facc15; padding-bottom: 15px; margin-bottom: 20px;">
+            <h2 style="color: #0f172a; margin: 0; font-size: 20px;">🎯 Nuevo Lead Registrado - RADAR 360</h2>
+            <p style="margin: 5px 0 0 0; font-size: 13px; color: #64748b;">Un nuevo negocio gastronómico se ha registrado</p>
+          </div>
+          
+          <p style="font-size: 14px; color: #334155; line-height: 1.5; margin-bottom: 20px;">
+            ¡Hola! Tienes un nuevo lead listo para seguimiento:
+          </p>
+          
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
+            <tr style="background-color: #f8fafc;">
+              <td style="padding: 10px 12px; font-weight: bold; border-bottom: 1px solid #f1f5f9; color: #475569; width: 40%; font-size: 13px;">Nombre del Negocio:</td>
+              <td style="padding: 10px 12px; border-bottom: 1px solid #f1f5f9; color: #0f172a; font-size: 13px; font-weight: 500;">${businessName || 'No especificado'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 12px; font-weight: bold; border-bottom: 1px solid #f1f5f9; color: #475569; font-size: 13px;">Nombre del Dueño:</td>
+              <td style="padding: 10px 12px; border-bottom: 1px solid #f1f5f9; color: #0f172a; font-size: 13px;">${ownerName || 'No especificado'}</td>
+            </tr>
+            <tr style="background-color: #f8fafc;">
+              <td style="padding: 10px 12px; font-weight: bold; border-bottom: 1px solid #f1f5f9; color: #475569; font-size: 13px;">Email de Contacto:</td>
+              <td style="padding: 10px 12px; border-bottom: 1px solid #f1f5f9; color: #0f172a; font-size: 13px;">
+                <a href="mailto:${email}" style="color: #2563eb; text-decoration: none; font-weight: 500;">${email || 'No especificado'}</a>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 12px; font-weight: bold; border-bottom: 1px solid #f1f5f9; color: #475569; font-size: 13px;">Teléfono (WhatsApp):</td>
+              <td style="padding: 10px 12px; border-bottom: 1px solid #f1f5f9; color: #0f172a; font-size: 13px;">
+                <a href="https://wa.me/${(phone || '').replace(/\D/g, '')}" style="color: #16a34a; text-decoration: none; font-weight: 500;">${phone || 'No especificado'}</a>
+              </td>
+            </tr>
+            <tr style="background-color: #fbf7e6;">
+              <td style="padding: 10px 12px; font-weight: bold; border-bottom: 1px solid #fef3c7; color: #b45309; font-size: 13px;">Plan Seleccionado:</td>
+              <td style="padding: 10px 12px; border-bottom: 1px solid #fef3c7; color: #92400e; font-size: 13px; font-weight: bold; text-transform: uppercase;">
+                ${plan === 'yearly' ? 'Membresía Anual ($199,99 USD / año)' : 'Membresía Mensual ($19,99 USD / mes)'}
+              </td>
+            </tr>
+          </table>
+
+          <div style="background-color: #f1f5f9; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 15px;">
+            <p style="margin: 0; font-size: 12px; color: #475569; font-weight: 500;">
+              💡 Haz clic en el enlace de teléfono o email arriba para contactar directamente al cliente.
+            </p>
+          </div>
+          
+          <p style="font-size: 11px; color: #94a3b8; text-align: center; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-bottom: 0;">
+            Este correo fue enviado de manera automática por el sistema de onboarding de RADAR 360.
+          </p>
+        </div>
+      `;
+
+      const response = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          from: "Radar 360 <onboarding@resend.dev>",
+          to: ["radar360negociosgastronomicos@gmail.com"],
+          subject: `🎯 Nuevo Lead: ${businessName || 'Restaurante'} (${plan === 'yearly' ? 'Plan Anual' : 'Plan Mensual'})`,
+          html: emailHtml
+        })
+      });
+
+      const responseData = await response.json();
+      if (!response.ok) {
+        console.error("Error al enviar email con Resend:", responseData);
+        return res.status(500).json({ success: false, error: "Error de Resend", details: responseData });
+      }
+
+      console.log("Email enviado exitosamente con Resend:", responseData);
+      return res.json({ success: true, resendId: (responseData as any).id });
+    } catch (error: any) {
+      console.error("Excepción al enviar email con Resend:", error);
+      return res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
   // API Route: Register feedback scan from diner
   app.post("/api/scan", (req, res) => {
     const { email, tableNumber, rating, clientFeedback, actionTaken, clientPhone } = req.body;
