@@ -296,31 +296,6 @@ export default function LeadModal({ isOpen, onClose, defaultPlan, onEnterDashboa
                 <h3 className="text-2xl font-black text-white tracking-tight">
                   {lang === 'en' ? 'Reputation Successfully Shielded!' : '¡Reputación Blindada Exitosamente!'}
                 </h3>
-                
-                <div className="space-y-2 bg-slate-950 border border-slate-850 p-4 rounded-2xl text-left leading-relaxed">
-                  <p className="text-xs text-slate-300 font-semibold flex items-center gap-1.5">
-                    <Check className="w-4 h-4 text-[#facc15] shrink-0" /> 
-                    {lang === 'en' ? 'Registered Subscription:' : 'Suscripción Registrada:'} <span className="text-[#facc15] font-mono">{plan === 'monthly' ? (lang === 'en' ? 'Monthly' : 'Mensual') : (lang === 'en' ? 'Annual Membership' : 'Membresía Anual')}</span>
-                  </p>
-                  <p className="text-xs text-slate-300 font-semibold flex items-center gap-1.5">
-                    <Check className="w-4 h-4 text-[#facc15] shrink-0" /> 
-                    {lang === 'en' ? 'Food Business:' : 'Negocio Gastronómico:'} <span className="text-white">{businessName}</span>
-                  </p>
-                  <p className="text-xs text-slate-450 leading-relaxed font-light mt-2 pt-2 border-t border-slate-900">
-                    {lang === 'en'
-                      ? <>Your RADAR 360 account is being configured on our servers. We have sent a validation email to <span className="text-slate-200 font-medium underline">{email}</span> and we will contact you via WhatsApp ({phone}) to review and approve your physical QR stand sticker designs.</>
-                      : <>Tu cuenta RADAR 360 se está configurando de manera exclusiva en nuestros servidores. Hemos enviado un correo de validación a <span className="text-slate-200 font-medium underline">{email}</span> y nos pondremos en contacto contigo a través de WhatsApp ({phone}) para validar el diseño físico de tus stickers QR.</>}
-                  </p>
-                  <p className="text-xs text-slate-450 leading-relaxed font-normal mt-2 pt-2 border-t border-slate-900/60 flex items-start gap-2">
-                    <span className="text-[#facc15] text-sm shrink-0">📂</span>
-                    <span><strong>{lang === 'en' ? 'Included Access:' : 'Acceso Incluido:'}</strong> {lang === 'en' ? 'You will get immediate access to a shared onboarding library with video tutorials on setting up the app, canceling your subscription in one click, and quickly training your service team.' : 'Recibirás acceso a una carpeta compartida con videos de capacitación para enseñarte a comenzar y qué configurar, cómo cancelar tu suscripción de forma rápida y resolución de dudas comunes para capacitar a tu personal.'}</span>
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-2.5 bg-slate-850 p-3 rounded-xl border border-slate-800 text-[11px] text-slate-400 text-left leading-snug">
-                  <Clock className="w-4 h-4 text-[#facc15] shrink-0" />
-                  <span>{lang === 'en' ? 'A dedicated technical manager will review your maps and menus in less than 12 business hours.' : 'Un consultor asignado validará tus menús e integrará tu ficha de Google Maps en un máximo de 12 horas hábiles.'}</span>
-                </div>
 
                 {/* IMPORTANT ACCOUNT ACTIVATION ANNOUNCEMENT */}
                 <div className="bg-amber-500/10 border-2 border-amber-500/30 p-4.5 rounded-2xl text-left space-y-2.5 relative overflow-hidden">
