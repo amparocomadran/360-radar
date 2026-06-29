@@ -44,7 +44,7 @@ export default function App() {
       const stored = localStorage.getItem('lang');
       if (stored === 'es' || stored === 'en') return stored;
     }
-    return 'es';
+    return 'en';
   });
 
   const handleSetLang = (newLang: 'es' | 'en') => {
